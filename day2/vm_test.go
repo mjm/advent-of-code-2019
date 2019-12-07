@@ -87,3 +87,15 @@ func TestExecute(t *testing.T) {
 		})
 	}
 }
+
+func TestClone(t *testing.T) {
+	vm, err := LoadFromString("1,0,0,0,99")
+	assert.NoError(t, err)
+
+	vm2 := vm.Clone()
+	vm.Set(1, 12)
+	vm2.Set(2, 2)
+
+	assert.Equal(t, vm.Memory, []int{1, 12, 0, 0, 99})
+	assert.Equal(t, vm2.Memory, []int{1, 0, 2, 0, 99})
+}

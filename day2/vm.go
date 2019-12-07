@@ -81,3 +81,12 @@ func (vm *VM) Set(i int, value int) {
 func (vm *VM) Advance() {
 	vm.pc += 4
 }
+
+func (vm *VM) Clone() *VM {
+	memory := make([]int, len(vm.Memory))
+	copy(memory, vm.Memory)
+	return &VM{
+		Memory: memory,
+		pc:     vm.pc,
+	}
+}
