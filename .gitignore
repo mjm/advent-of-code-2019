@@ -13,3 +13,8 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+bazel-advent-of-code-2019
+bazel-bin
+bazel-out
+bazel-testlogs
