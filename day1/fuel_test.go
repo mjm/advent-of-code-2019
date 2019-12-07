@@ -21,10 +21,28 @@ func TestFuelRequired(t *testing.T) {
 	for _, c := range cases {
 		name := fmt.Sprintf("mass %d requires %d fuel", c.mass, c.fuelRequired)
 		t.Run(name, func(t *testing.T) {
-			m := Module{
-				Mass: c.mass,
-			}
-			assert.Equal(t, c.fuelRequired, m.FuelRequired())
+			m := NewModule(c.mass)
+			assert.Equal(t, c.fuelRequired, FuelRequired(m))
+		})
+	}
+}
+
+func TestTotalFuelRequired(t *testing.T) {
+	cases := []struct {
+		mass         int
+		fuelRequired int
+	}{
+		{12, 2},
+		{14, 2},
+		{1969, 966},
+		{100756, 50346},
+	}
+
+	for _, c := range cases {
+		name := fmt.Sprintf("mass %d requires %d fuel", c.mass, c.fuelRequired)
+		t.Run(name, func(t *testing.T) {
+			m := NewModule(c.mass)
+			assert.Equal(t, c.fuelRequired, TotalFuelRequired(m))
 		})
 	}
 }
