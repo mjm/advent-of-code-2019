@@ -96,6 +96,69 @@ func TestExecute(t *testing.T) {
 	}
 }
 
+func TestInputOutput(t *testing.T) {
+	cases := []struct {
+		program string
+		input   []int
+		output  []int
+	}{
+		{
+			program: "3,9,8,9,10,9,4,9,99,-1,8",
+			input:   []int{8},
+			output:  []int{1},
+		},
+		{
+			program: "3,9,8,9,10,9,4,9,99,-1,8",
+			input:   []int{10},
+			output:  []int{0},
+		},
+		{
+			program: "3,9,8,9,10,9,4,9,99,-1,8",
+			input:   []int{7},
+			output:  []int{0},
+		},
+		{
+			program: "3,3,1105,-1,9,1101,0,0,12,4,12,99,1",
+			input:   []int{0},
+			output:  []int{0},
+		},
+		{
+			program: "3,3,1105,-1,9,1101,0,0,12,4,12,99,1",
+			input:   []int{4},
+			output:  []int{1},
+		},
+	}
+
+	for i, c := range cases {
+		t.Run(fmt.Sprintf("input/output case %d", i), func(t *testing.T) {
+			vm, err := LoadFromString(c.program)
+			assert.NoError(t, err)
+
+			done := make(chan []int)
+			go func() {
+				for _, val := range c.input {
+					vm.Input <- val
+				}
+				var outputs []int
+				for {
+					n, more := <-vm.Output
+					if !more {
+						done <- outputs
+						return
+					}
+
+					outputs = append(outputs, n)
+				}
+			}()
+
+			err = vm.Execute()
+			assert.NoError(t, err)
+			outputs := <-done
+			assert.Equal(t, c.output, outputs)
+		})
+	}
+}
+
 func TestClone(t *testing.T) {
 	vm, err := LoadFromString("1,0,0,0,99")
 	assert.NoError(t, err)

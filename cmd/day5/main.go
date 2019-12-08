@@ -17,17 +17,29 @@ func main() {
 		log.Fatal(err)
 	}
 
-	vm, err := day5.LoadFromString(string(contents))
+	original, err := day5.LoadFromString(string(contents))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var codes []int
+	vm := original.Clone()
+	part1(vm)
 
+	vm = original.Clone()
+	part2(vm)
+}
+
+func part1(vm *day5.VM) {
+	done := make(chan []int)
 	go func() {
 		vm.Input <- 1
+		var codes []int
 		for {
-			code := <-vm.Output
+			code, more := <-vm.Output
+			if !more {
+				done <- codes
+				return
+			}
 			codes = append(codes, code)
 		}
 	}()
@@ -36,5 +48,22 @@ func main() {
 		log.Fatal(err)
 	}
 
+	codes := <-done
 	log.Println(codes)
+}
+
+func part2(vm *day5.VM) {
+	done := make(chan int)
+	go func() {
+		vm.Input <- 5
+		code := <-vm.Output
+		done <- code
+	}()
+
+	if err := vm.Execute(); err != nil {
+		log.Fatal(err)
+	}
+
+	code := <-done
+	log.Printf("The diagnostic code is %d", code)
 }

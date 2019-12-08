@@ -25,11 +25,15 @@ func (inst Instruction) Set(vm *VM, i int, value int) {
 type Op int
 
 const (
-	OpAdd      Op = 1
-	OpMultiply Op = 2
-	OpInput    Op = 3
-	OpOutput   Op = 4
-	OpHalt     Op = 99
+	OpAdd         Op = 1
+	OpMultiply    Op = 2
+	OpInput       Op = 3
+	OpOutput      Op = 4
+	OpJumpIfTrue  Op = 5
+	OpJumpIfFalse Op = 6
+	OpLessThan    Op = 7
+	OpEquals      Op = 8
+	OpHalt        Op = 99
 )
 
 type ParamMode int

@@ -59,7 +59,38 @@ func (vm *VM) Execute() error {
 			n := inst.Get(vm, 0)
 			vm.Output <- n
 
+		case OpJumpIfTrue:
+			n := inst.Get(vm, 0)
+			if n != 0 {
+				vm.pc = inst.Get(vm, 1)
+			}
+
+		case OpJumpIfFalse:
+			n := inst.Get(vm, 0)
+			if n == 0 {
+				vm.pc = inst.Get(vm, 1)
+			}
+
+		case OpLessThan:
+			a := inst.Get(vm, 0)
+			b := inst.Get(vm, 1)
+			if a < b {
+				inst.Set(vm, 2, 1)
+			} else {
+				inst.Set(vm, 2, 0)
+			}
+
+		case OpEquals:
+			a := inst.Get(vm, 0)
+			b := inst.Get(vm, 1)
+			if a == b {
+				inst.Set(vm, 2, 1)
+			} else {
+				inst.Set(vm, 2, 0)
+			}
+
 		case OpHalt:
+			close(vm.Output)
 			return nil
 
 		default:
@@ -94,8 +125,10 @@ func (vm *VM) scanInstruction() (*Instruction, error) {
 
 func paramCount(op Op) (int, error) {
 	switch op {
-	case OpAdd, OpMultiply:
+	case OpAdd, OpMultiply, OpLessThan, OpEquals:
 		return 3, nil
+	case OpJumpIfFalse, OpJumpIfTrue:
+		return 2, nil
 	case OpInput, OpOutput:
 		return 1, nil
 	case OpHalt:
@@ -122,6 +155,8 @@ func (vm *VM) Clone() *VM {
 	copy(memory, vm.Memory)
 	return &VM{
 		Memory: memory,
+		Input:  make(chan int),
+		Output: make(chan int),
 		pc:     vm.pc,
 	}
 }
