@@ -20,14 +20,20 @@ func abs(n int) int {
 	return n
 }
 
+type cell struct {
+	id    int8
+	steps int
+}
+
+type grid map[point]map[int8]cell
+
 type Map struct {
-	grid      map[point]int
-	highestId int8
+	grid grid
 }
 
 func NewMap() *Map {
 	return &Map{
-		grid: make(map[point]int),
+		grid: make(grid),
 	}
 }
 
@@ -36,25 +42,22 @@ func (m *Map) Count(x, y int) int {
 }
 
 func (m *Map) countAtPoint(p point) int {
-	val := m.grid[p]
-	var count int
-	for i := m.highestId; i >= 0; i-- {
-		check := 1 << i
-		if val&check != 0 {
-			count++
-		}
-	}
-	return count
+	return len(m.grid[p])
 }
 
-func (m *Map) Set(x, y int, id int8) {
+func (m *Map) Set(x, y int, id int8, steps int) {
 	p := point{x, y}
-	val := m.grid[p]
-	val |= 1 << id
-	m.grid[p] = val
+	cells := m.grid[p]
+	if cells == nil {
+		cells = make(map[int8]cell)
+		m.grid[p] = cells
+	}
 
-	if id > m.highestId {
-		m.highestId = id
+	cell, ok := cells[id]
+	if !ok {
+		cell.id = id
+		cell.steps = steps
+		cells[id] = cell
 	}
 }
 
@@ -80,4 +83,31 @@ func (m *Map) NearestIntersection() (int, int, int) {
 	}
 
 	return best.X, best.Y, d
+}
+
+func (m *Map) ShortestIntersection() (int, int, int) {
+	var best point
+	steps := math.MaxInt64
+	for p, cells := range m.grid {
+		if len(cells) < 2 {
+			continue
+		}
+
+		var totalSteps int
+		for _, cell := range cells {
+			totalSteps += cell.steps
+		}
+
+		if best.X == 0 && best.Y == 0 {
+			best = p
+			steps = totalSteps
+		} else {
+			if totalSteps < steps {
+				best = p
+				steps = totalSteps
+			}
+		}
+	}
+
+	return best.X, best.Y, steps
 }

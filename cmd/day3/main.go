@@ -35,4 +35,7 @@ func main() {
 
 	x, y, d := m.NearestIntersection()
 	log.Printf("Nearest intersection is at (%d, %d), distance is %d", x, y, d)
+
+	x, y, steps := m.ShortestIntersection()
+	log.Printf("Shortest intersection is at (%d, %d), with %d steps", x, y, steps)
 }

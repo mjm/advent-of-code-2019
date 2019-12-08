@@ -29,9 +29,9 @@ func PathFromString(s string) (Path, error) {
 }
 
 func (p Path) Apply(m *Map, id int8) {
-	var x, y int
+	var pos PathPosition
 	for _, seg := range p.Segments {
-		x, y = seg.Apply(m, x, y, id)
+		pos = seg.Apply(m, pos, id)
 	}
 }
 
@@ -50,6 +50,12 @@ var (
 		'R': Right,
 	}
 )
+
+type PathPosition struct {
+	X     int
+	Y     int
+	Steps int
+}
 
 type PathSegment struct {
 	Direction Direction
@@ -80,13 +86,14 @@ func SegmentFromString(s string) (PathSegment, error) {
 	return seg, nil
 }
 
-func (s PathSegment) Apply(m *Map, x, y int, id int8) (int, int) {
+func (s PathSegment) Apply(m *Map, pos PathPosition, id int8) PathPosition {
 	for i := 0; i < s.Length; i++ {
-		x += s.Direction.X
-		y += s.Direction.Y
+		pos.X += s.Direction.X
+		pos.Y += s.Direction.Y
+		pos.Steps++
 
-		m.Set(x, y, id)
+		m.Set(pos.X, pos.Y, id, pos.Steps)
 	}
 
-	return x, y
+	return pos
 }
