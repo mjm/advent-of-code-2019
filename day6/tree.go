@@ -24,15 +24,22 @@ func TreeFromString(s string) (*Tree, error) {
 			return nil, fmt.Errorf("line %q does not have two nodes separated by ')'", line)
 		}
 
-		t.AddEdge(nodes[0], nodes[1])
+		if err := t.AddEdge(nodes[0], nodes[1]); err != nil {
+			return nil, err
+		}
 	}
 	return t, nil
 }
 
-func (t *Tree) AddEdge(from, to string) {
+func (t *Tree) AddEdge(from, to string) error {
 	nf := t.getNode(from)
 	nt := t.getNode(to)
+	if nt.Parent != nil {
+		return fmt.Errorf("node %q cannot have parent %q, as it already has parent %q", to, from, nt.Parent.Name)
+	}
 	nf.Children = append(nf.Children, nt)
+	nt.Parent = nf
+	return nil
 }
 
 func (t *Tree) Children(name string) []string {
@@ -57,6 +64,37 @@ func (t *Tree) TotalDepths(from string) int {
 	return n.totalDepths(0)
 }
 
+func (t *Tree) Distance(from, to string) int {
+	nf, ok := t.nodes[from]
+	if !ok {
+		return -1
+	}
+	nt, ok := t.nodes[to]
+	if !ok {
+		return -1
+	}
+
+	var depth int
+	parents := make(map[string]int)
+	for {
+		if nf != nil {
+			if dparent, ok := parents[nf.Name]; ok {
+				return dparent + depth
+			}
+			parents[nf.Name] = depth
+			nf = nf.Parent
+		}
+		if nt != nil {
+			if dparent, ok := parents[nt.Name]; ok {
+				return dparent + depth
+			}
+			parents[nt.Name] = depth
+			nt = nt.Parent
+		}
+		depth++
+	}
+}
+
 func (t *Tree) getNode(name string) *Node {
 	n, ok := t.nodes[name]
 	if !ok {
@@ -68,6 +106,7 @@ func (t *Tree) getNode(name string) *Node {
 
 type Node struct {
 	Name     string
+	Parent   *Node
 	Children []*Node
 }
 

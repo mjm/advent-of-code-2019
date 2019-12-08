@@ -46,3 +46,25 @@ func TestTotalDepths(t *testing.T) {
 
 	assert.Equal(t, 42, tree.TotalDepths("COM"))
 }
+
+const example2 = `COM)B
+B)C
+C)D
+D)E
+E)F
+B)G
+G)H
+D)I
+E)J
+J)K
+K)L
+K)YOU
+I)SAN`
+
+func TestDistance(t *testing.T) {
+	tree, err := TreeFromString(example2)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 6, tree.Distance("YOU", "SAN"))
+	assert.Equal(t, 5, tree.Distance("L", "C"))
+}

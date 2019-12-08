@@ -23,4 +23,5 @@ func main() {
 	}
 
 	log.Printf("The total number of orbits in this map is %d", tree.TotalDepths("COM"))
+	log.Printf("The minimum number of transfers from you to Santa is %d", tree.Distance("YOU", "SAN")-2)
 }
