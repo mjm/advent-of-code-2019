@@ -20,8 +20,8 @@ func main() {
 	}
 
 	passes := day4.ValidPasswords(min, max)
-	for _, s := range passes {
-		log.Println(s)
-	}
 	log.Printf("Number of valid passwords: %d", len(passes))
+
+	passes = day4.ReallyValidPasswords(min, max)
+	log.Printf("Number of really valid passwords: %d", len(passes))
 }
