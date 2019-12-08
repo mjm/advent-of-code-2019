@@ -34,14 +34,10 @@ func part1(vm *day5.VM) {
 	go func() {
 		vm.Input <- 1
 		var codes []int
-		for {
-			code, more := <-vm.Output
-			if !more {
-				done <- codes
-				return
-			}
+		for code := range vm.Output {
 			codes = append(codes, code)
 		}
+		done <- codes
 	}()
 
 	if err := vm.Execute(); err != nil {

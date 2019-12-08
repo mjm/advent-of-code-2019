@@ -140,15 +140,10 @@ func TestInputOutput(t *testing.T) {
 					vm.Input <- val
 				}
 				var outputs []int
-				for {
-					n, more := <-vm.Output
-					if !more {
-						done <- outputs
-						return
-					}
-
+				for n := range vm.Output {
 					outputs = append(outputs, n)
 				}
+				done <- outputs
 			}()
 
 			err = vm.Execute()
