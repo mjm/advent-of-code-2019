@@ -24,3 +24,11 @@ func TestLayerCounts(t *testing.T) {
 		{1: 1, 5: 2, 2: 1, 3: 1, 4: 1},
 	}, img.DigitCounts())
 }
+
+func TestComposite(t *testing.T) {
+	img, err := ImageFromString(`0222112222120000`, 2, 2)
+	assert.NoError(t, err)
+	assert.Equal(t, 4, len(img.Layers))
+
+	assert.Equal(t, []int{0, 1, 1, 0}, img.Composite())
+}

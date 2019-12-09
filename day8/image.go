@@ -36,3 +36,18 @@ func (img *Image) DigitCounts() []map[int]int {
 	}
 	return counts
 }
+
+func (img *Image) Composite() []int {
+	ret := make([]int, img.Width*img.Height)
+	copy(ret, img.Layers[0])
+
+	for _, layer := range img.Layers[1:] {
+		for i, color := range layer {
+			if ret[i] == 2 {
+				ret[i] = color
+			}
+		}
+	}
+
+	return ret
+}

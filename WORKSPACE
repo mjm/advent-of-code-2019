@@ -69,3 +69,31 @@ go_repository(
     sum = "h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=",
     version = "v2.2.2",
 )
+
+go_repository(
+    name = "com_github_fatih_color",
+    importpath = "github.com/fatih/color",
+    sum = "h1:DkWD4oS2D8LGGgTQ6IvwJJXSL5Vp2ffcQg58nFV38Ys=",
+    version = "v1.7.0",
+)
+
+go_repository(
+    name = "com_github_mattn_go_colorable",
+    importpath = "github.com/mattn/go-colorable",
+    sum = "h1:snbPLB8fVfU9iwbbo30TPtbLRzwWu6aJS6Xh4eaaviA=",
+    version = "v0.1.4",
+)
+
+go_repository(
+    name = "com_github_mattn_go_isatty",
+    importpath = "github.com/mattn/go-isatty",
+    sum = "h1:qxFzApOv4WsAL965uUPIsXzAKCZxN2p9UqdhFS4ZW10=",
+    version = "v0.0.10",
+)
+
+go_repository(
+    name = "org_golang_x_sys",
+    importpath = "golang.org/x/sys",
+    sum = "h1:QAcqgptGM8IQBC9K/RC4o+O9YmqEm0diQn9QmZw/0mU=",
+    version = "v0.0.0-20191008105621-543471e840be",
+)
