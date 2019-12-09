@@ -59,3 +59,67 @@ func (a *AmplifierArray) Run(phaseSettings []int) int {
 
 	return a.Amps[len(a.Amps)-1].Output()
 }
+
+func (a *AmplifierArray) RunWithFeedback(phaseSettings []int) int {
+	if len(phaseSettings) != len(a.Amps) {
+		panic("amplifier array and phase settings count mismatch")
+	}
+
+	firstAmp := a.Amps[0]
+	lastAmp := a.Amps[len(a.Amps)-1]
+
+	for i, setting := range phaseSettings {
+		a.Amps[i].Init(setting)
+	}
+	go firstAmp.Send(0)
+
+	for i := 0; i < len(a.Amps)-1; i++ {
+		go a.Amps[i].PipeTo(a.Amps[i+1])
+	}
+
+	done := make(chan int)
+	go func() {
+		var lastVal int
+		for val := range lastAmp.VM.Output {
+			lastVal = val
+			firstAmp.VM.Input <- val
+		}
+		done <- lastVal
+	}()
+
+	for _, amp := range a.Amps {
+		go amp.Run()
+	}
+
+	return <-done
+}
+
+func (a *AmplifierArray) HighestSignal(phaseSettings []int) (int, []int) {
+	var highestSequence []int
+	var highestOutput int
+
+	for nums := range AllPermutations(phaseSettings) {
+		out := a.Run(nums)
+		if out > highestOutput {
+			highestOutput = out
+			highestSequence = nums
+		}
+	}
+
+	return highestOutput, highestSequence
+}
+
+func (a *AmplifierArray) HighestFeedbackSignal(phaseSettings []int) (int, []int) {
+	var highestSequence []int
+	var highestOutput int
+
+	for nums := range AllPermutations(phaseSettings) {
+		out := a.RunWithFeedback(nums)
+		if out > highestOutput {
+			highestOutput = out
+			highestSequence = nums
+		}
+	}
+
+	return highestOutput, highestSequence
+}
