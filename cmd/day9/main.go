@@ -54,4 +54,19 @@ func part1(template *day9.VM) {
 }
 
 func part2(template *day9.VM) {
+	vm := template.Clone()
+	vm.Input <- 2
+
+	done := make(chan int)
+	go func() {
+		n := <-vm.Output
+		done <- n
+	}()
+
+	if err := vm.Execute(); err != nil {
+		log.Fatal(err)
+	}
+
+	coordinates := <-done
+	log.Printf("The coordinates of the distress signal are %d", coordinates)
 }
