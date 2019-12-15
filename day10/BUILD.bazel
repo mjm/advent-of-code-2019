@@ -2,7 +2,10 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "go_default_library",
-    srcs = ["map.go"],
+    srcs = [
+        "asteroid.go",
+        "map.go",
+    ],
     importpath = "github.com/mjm/advent-of-code-2019/day10",
     visibility = ["//visibility:public"],
 )
