@@ -5,11 +5,13 @@ go_library(
     srcs = [
         "canvas.go",
         "game.go",
+        "player.go",
     ],
     importpath = "github.com/mjm/advent-of-code-2019/day13",
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/point:go_default_library",
         "@com_github_fatih_color//:go_default_library",
+        "@com_github_gdamore_tcell//:go_default_library",
     ],
 )

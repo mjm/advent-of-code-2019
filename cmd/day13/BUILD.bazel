@@ -8,6 +8,7 @@ go_library(
     deps = [
         "//day13:go_default_library",
         "//pkg/intcode:go_default_library",
+        "@com_github_gdamore_tcell//:go_default_library",
     ],
 )
 

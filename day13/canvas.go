@@ -49,6 +49,33 @@ func (c *Canvas) CountColor(color int) int {
 	return n
 }
 
+// Draw calls the provided drawFn for every square on the canvas, regardless
+// of whether it has been painted to.
+func (c *Canvas) Draw(drawFn func(int, int, int)) {
+	width := c.Width()
+	height := c.Height()
+
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			color := c.paint[point.Point2D{
+				X: x + c.minCorner.X,
+				Y: y + c.minCorner.Y,
+			}]
+			drawFn(x, y, color)
+		}
+	}
+}
+
+// Width returns the width of the canvas
+func (c *Canvas) Width() int {
+	return c.maxCorner.X - c.minCorner.X + 1
+}
+
+// Height returns the height of the canvas
+func (c *Canvas) Height() int {
+	return c.maxCorner.Y - c.minCorner.Y + 1
+}
+
 func (c *Canvas) adjustSizeIfNeeded(p point.Point2D) {
 	if p.X < c.minCorner.X {
 		c.minCorner.X = p.X
