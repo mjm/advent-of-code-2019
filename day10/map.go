@@ -77,3 +77,22 @@ func (m *Map) BestAsteroid() (int, int, int) {
 	}
 	return best.X, best.Y, count
 }
+
+// Vaporized returns the coordinates of the Nth asteroid to be vaporized by the laser at
+// the given coordinates.
+func (m *Map) Vaporized(x, y, n int) (int, int) {
+	a := m.grid[point{x, y}]
+
+	var seen int
+	for i := 0; true; i++ {
+		as := a.AsteroidsAtDistance(i)
+		if seen+len(as) <= n {
+			seen += len(as)
+		} else {
+			b := as[n-seen]
+			return b.X, b.Y
+		}
+	}
+
+	panic("how did I get here?")
+}
