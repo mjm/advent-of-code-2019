@@ -3,21 +3,18 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "go_default_library",
     srcs = [
-        "cycle_finder.go",
-        "moon.go",
-        "moon_system.go",
-        "vector.go",
+        "gcd.go",
+        "lcm.go",
     ],
-    importpath = "github.com/mjm/advent-of-code-2019/day12",
+    importpath = "github.com/mjm/advent-of-code-2019/pkg/mathalg",
     visibility = ["//visibility:public"],
-    deps = ["//pkg/mathalg:go_default_library"],
 )
 
 go_test(
     name = "go_default_test",
     srcs = [
-        "moon_system_test.go",
-        "moon_test.go",
+        "gcd_test.go",
+        "lcm_test.go",
     ],
     embed = [":go_default_library"],
     deps = ["@com_github_stretchr_testify//assert:go_default_library"],

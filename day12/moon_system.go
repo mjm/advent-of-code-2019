@@ -2,6 +2,8 @@ package day12
 
 import (
 	"strings"
+
+	"github.com/mjm/advent-of-code-2019/pkg/mathalg"
 )
 
 // MoonSystem is a set of moons that all affect each other's motion.
@@ -43,6 +45,17 @@ func (s *MoonSystem) Energy() int {
 		total += m.Energy()
 	}
 	return total
+}
+
+// FirstRepetition returns the number of time steps that must advance before the moons
+// are in the same state (positions and velocity) as some previous time step.
+func (s *MoonSystem) FirstRepetition() int {
+	cf := newCycleFinder(s)
+	cf.process()
+
+	offset := cf.maxOffset()
+	length := mathalg.LCM(cf.x.length, cf.y.length, cf.z.length)
+	return offset + length
 }
 
 func (s *MoonSystem) advanceOnce() {
