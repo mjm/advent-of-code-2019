@@ -1,0 +1,16 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "canvas.go",
+        "mapper.go",
+        "path_finder.go",
+    ],
+    importpath = "github.com/mjm/advent-of-code-2019/day15",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/point:go_default_library",
+        "@com_github_fatih_color//:go_default_library",
+    ],
+)
