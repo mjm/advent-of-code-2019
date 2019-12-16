@@ -10,16 +10,10 @@ import (
 )
 
 func main() {
-	template, err := intcode.LoadFromString(input.ReadString())
+	vm, err := intcode.LoadFromString(input.ReadString())
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	part1(template)
-}
-
-func part1(template *intcode.VM) {
-	vm := template.Clone()
 
 	input := make(chan int)
 	vm.SetInputChan(input)
@@ -60,4 +54,7 @@ func part1(template *intcode.VM) {
 	pf := day15.NewPathFinder(canvas, dest)
 	path := pf.ShortestPath()
 	log.Printf("Shortest path to destination is %d steps:\n%v", len(path)-1, path)
+
+	steps := day15.Fill(canvas)
+	log.Printf("It took %d minutes to fill the map.", steps)
 }

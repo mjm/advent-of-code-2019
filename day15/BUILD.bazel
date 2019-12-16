@@ -4,6 +4,7 @@ go_library(
     name = "go_default_library",
     srcs = [
         "canvas.go",
+        "fill.go",
         "mapper.go",
         "path_finder.go",
     ],
