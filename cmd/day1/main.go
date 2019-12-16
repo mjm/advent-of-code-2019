@@ -1,23 +1,17 @@
 package main
 
 import (
-	"flag"
 	"log"
-	"os"
 	"strconv"
 	"text/scanner"
 
 	"github.com/mjm/advent-of-code-2019/day1"
+	"github.com/mjm/advent-of-code-2019/pkg/input"
 )
 
 func main() {
-	flag.Parse()
-	filename := flag.Arg(0)
-
-	file, err := os.Open(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
+	file := input.Open()
+	defer file.Close()
 
 	var s scanner.Scanner
 	s.Init(file)

@@ -1,25 +1,16 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 
 	"github.com/fatih/color"
 	"github.com/mjm/advent-of-code-2019/day8"
+	"github.com/mjm/advent-of-code-2019/pkg/input"
 )
 
 func main() {
-	flag.Parse()
-	filename := flag.Arg(0)
-
-	contents, err := ioutil.ReadFile(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	img, err := day8.ImageFromString(string(contents), 25, 6)
+	img, err := day8.ImageFromString(input.ReadString(), 25, 6)
 	if err != nil {
 		log.Fatal(err)
 	}

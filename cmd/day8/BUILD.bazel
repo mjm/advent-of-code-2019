@@ -7,6 +7,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//day8:go_default_library",
+        "//pkg/input:go_default_library",
         "@com_github_fatih_color//:go_default_library",
     ],
 )

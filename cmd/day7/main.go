@@ -1,23 +1,14 @@
 package main
 
 import (
-	"flag"
-	"io/ioutil"
 	"log"
 
 	"github.com/mjm/advent-of-code-2019/day7"
+	"github.com/mjm/advent-of-code-2019/pkg/input"
 )
 
 func main() {
-	flag.Parse()
-	filename := flag.Arg(0)
-
-	contents, err := ioutil.ReadFile(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	template, err := day7.LoadFromString(string(contents))
+	template, err := day7.LoadFromString(input.ReadString())
 	if err != nil {
 		log.Fatal(err)
 	}

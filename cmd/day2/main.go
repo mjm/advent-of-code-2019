@@ -1,25 +1,16 @@
 package main
 
 import (
-	"flag"
-	"io/ioutil"
 	"log"
 
 	"github.com/mjm/advent-of-code-2019/day2"
+	"github.com/mjm/advent-of-code-2019/pkg/input"
 )
 
 const maxVal = 100
 
 func main() {
-	flag.Parse()
-	filename := flag.Arg(0)
-
-	contents, err := ioutil.ReadFile(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	vm, err := day2.LoadFromString(string(contents))
+	vm, err := day2.LoadFromString(input.ReadString())
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,24 +1,15 @@
 package main
 
 import (
-	"flag"
-	"io/ioutil"
 	"log"
 	"strings"
 
 	"github.com/mjm/advent-of-code-2019/day3"
+	"github.com/mjm/advent-of-code-2019/pkg/input"
 )
 
 func main() {
-	flag.Parse()
-	filename := flag.Arg(0)
-
-	contents, err := ioutil.ReadFile(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	lines := strings.Split(string(contents), "\n")
+	lines := strings.Split(input.ReadString(), "\n")
 	m := day3.NewMap()
 
 	p1, err := day3.PathFromString(lines[0])

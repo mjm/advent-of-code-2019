@@ -5,7 +5,10 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/mjm/advent-of-code-2019/cmd/day10",
     visibility = ["//visibility:private"],
-    deps = ["//day10:go_default_library"],
+    deps = [
+        "//day10:go_default_library",
+        "//pkg/input:go_default_library",
+    ],
 )
 
 go_binary(

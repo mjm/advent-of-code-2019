@@ -2,8 +2,6 @@ package main
 
 import (
 	"bufio"
-	"flag"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
@@ -11,19 +9,12 @@ import (
 
 	"github.com/gdamore/tcell"
 	"github.com/mjm/advent-of-code-2019/day13"
+	"github.com/mjm/advent-of-code-2019/pkg/input"
 	"github.com/mjm/advent-of-code-2019/pkg/intcode"
 )
 
 func main() {
-	flag.Parse()
-	filename := flag.Arg(0)
-
-	contents, err := ioutil.ReadFile(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	paintVM, err := intcode.LoadFromString(string(contents))
+	paintVM, err := intcode.LoadFromString(input.ReadString())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,7 +26,7 @@ func main() {
 		os.Exit(1)
 	}()
 
-	// part1(paintVM)
+	part1(paintVM)
 	part2(paintVM)
 }
 

@@ -1,26 +1,17 @@
 package main
 
 import (
-	"flag"
-	"io/ioutil"
 	"log"
 	"os"
 
 	"github.com/mjm/advent-of-code-2019/day11"
+	"github.com/mjm/advent-of-code-2019/pkg/input"
 	"github.com/mjm/advent-of-code-2019/pkg/intcode"
 	"github.com/mjm/advent-of-code-2019/pkg/point"
 )
 
 func main() {
-	flag.Parse()
-	filename := flag.Arg(0)
-
-	contents, err := ioutil.ReadFile(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	paintVM, err := intcode.LoadFromString(string(contents))
+	paintVM, err := intcode.LoadFromString(input.ReadString())
 	if err != nil {
 		log.Fatal(err)
 	}
