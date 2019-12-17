@@ -38,17 +38,49 @@ func FFT(input []int, n int) []int {
 func fft(input []int) []int {
 	output := make([]int, len(input))
 	for i := range output {
-		pat := pattern(i, len(input))
 		var n int
-		for j, m := range input {
-			n += pat[j] * m
+		for j := i; j < len(input); j++ {
+			n += patternValue(i, j) * input[j]
 		}
 		output[i] = abs(n) % 10
 	}
 	return output
 }
 
+// OffsetFFT calculates the FFT offset into some point in the second half of
+// the input. This is a significantly optimized version, but it can only work
+// on the second half. It returns only the section of the result after the
+// given offset (the rest of the sequence is ignored entirely).
+func OffsetFFT(input []int, n int, offset int) []int {
+	if offset < len(input)/2 {
+		panic("cannot use OffsetFFT if offset is in the first half of the input")
+	}
+
+	ns := input[offset:]
+	for i := 0; i < n; i++ {
+		ns = offsetFFT(ns, offset)
+	}
+	return ns
+}
+
+func offsetFFT(input []int, offset int) []int {
+	output := make([]int, len(input))
+	output[len(output)-1] = input[len(input)-1]
+	for i := len(input) - 2; i >= 0; i-- {
+		output[i] = (output[i+1] + input[i]) % 10
+	}
+	return output
+}
+
 var patternBase = []int{0, 1, 0, -1}
+
+func patternValue(i, j int) int {
+	i++
+	j++
+
+	k := (j / i) % 4
+	return patternBase[k]
+}
 
 func pattern(i, n int) []int {
 	res := make([]int, 0, n+1)

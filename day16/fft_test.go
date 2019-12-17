@@ -23,6 +23,9 @@ func TestPattern(t *testing.T) {
 	for _, c := range cases {
 		t.Run(fmt.Sprintf("pattern where i=%d n=%d", c.i, c.n), func(t *testing.T) {
 			assert.Equal(t, c.res, pattern(c.i, c.n))
+			for i, n := range c.res {
+				assert.Equal(t, n, patternValue(c.i, i), "expected patternValue(%d, %d) to be %d", c.i, i, n)
+			}
 		})
 	}
 }
