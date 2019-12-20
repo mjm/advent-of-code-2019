@@ -114,6 +114,14 @@ func (vm *VM) Execute() error {
 	}
 }
 
+// MustExecute runs the loaded program like Execute, but it panics if there
+// is an error running the program.
+func (vm *VM) MustExecute() {
+	if err := vm.Execute(); err != nil {
+		panic(err)
+	}
+}
+
 func (vm *VM) scanInstruction() (*Instruction, error) {
 	var inst Instruction
 
@@ -163,6 +171,16 @@ func (vm *VM) SetInputChan(input chan int) {
 	vm.Input = func() int {
 		return <-input
 	}
+}
+
+// SetInputSeq sets a sequence of values to provide one-by-one as input to the
+// program.
+func (vm *VM) SetInputSeq(input []int) {
+	inputCh := make(chan int, len(input))
+	for _, n := range input {
+		inputCh <- n
+	}
+	vm.SetInputChan(inputCh)
 }
 
 // At gets the integer at the given memory address.
