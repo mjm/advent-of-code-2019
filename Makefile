@@ -1,7 +1,7 @@
 BAZEL ?= bazel
 PWD := $(shell echo ${PWD})
 
-CUSTOM_DAYS := day4
+CUSTOM_DAYS := day4 day18
 DAYS := $(filter-out $(CUSTOM_DAYS),$(wildcard day*))
 
 .PHONY: $(DAYS)
