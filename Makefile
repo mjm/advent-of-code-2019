@@ -12,6 +12,10 @@ $(DAYS):
 day4:
 	$(BAZEL) run //cmd/day4:day4 -- 246540 787419
 
+.PHONY: day18
+day18:
+	$(BAZEL) run //cmd/day18:day18 -- $(PWD)/day18/input.txt $(PWD)/day18/input2.txt
+
 .PHONY: test
 test:
 	$(BAZEL) test //... --test_output=all

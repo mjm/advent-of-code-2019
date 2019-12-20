@@ -9,7 +9,7 @@ import (
 // Map represents an underground cave map, which is restricted to a 2D
 // Cartesian coordinate system and is full of keys and doors.
 type Map struct {
-	start         point.Point2D
+	starts        map[point.Point2D]uint32
 	points        map[point.Point2D]rune
 	keys          map[point.Point2D]rune
 	neighbors     map[point.Point2D][]point.Point2D
@@ -24,7 +24,7 @@ type cacheKey struct {
 
 // MapFromString reads a map from an ASCII representation of it.
 func MapFromString(s string) *Map {
-	var start point.Point2D
+	starts := make(map[point.Point2D]uint32)
 	points := make(map[point.Point2D]rune)
 	keys := make(map[point.Point2D]rune)
 	for y, line := range strings.Split(s, "\n") {
@@ -37,7 +37,7 @@ func MapFromString(s string) *Map {
 				keys[p] = c
 			}
 			if c == '@' {
-				start = p
+				starts[p] = 0
 			}
 		}
 	}
@@ -52,7 +52,7 @@ func MapFromString(s string) *Map {
 	}
 
 	return &Map{
-		start:     start,
+		starts:    starts,
 		points:    points,
 		keys:      keys,
 		neighbors: neighbors,
@@ -66,13 +66,16 @@ type pointPair struct {
 
 func (m *Map) buildPaths() {
 	m.paths = make(map[point.Point2D]map[point.Point2D]Path)
-	m.buildPathsFrom(m.start)
+	for p := range m.starts {
+		keys := m.buildPathsFrom(p)
+		m.starts[p] = keys
+	}
 	for k := range m.keys {
 		m.buildPathsFrom(k)
 	}
 }
 
-func (m *Map) buildPathsFrom(start point.Point2D) {
+func (m *Map) buildPathsFrom(start point.Point2D) uint32 {
 	paths := make(map[point.Point2D]Path)
 	m.paths[start] = paths
 
@@ -80,13 +83,12 @@ func (m *Map) buildPathsFrom(start point.Point2D) {
 	parents := make(map[point.Point2D]point.Point2D)
 	q.Enqueue(start)
 
-	keys := (1 << len(m.keys)) - 1
-
-	for keys != 0 && !q.Empty() {
+	var keys uint32
+	for !q.Empty() {
 		p, _ := q.Dequeue()
 		if c, ok := m.keys[p]; ok {
 			i := uint32(c - 97)
-			keys &^= 1 << i
+			keys |= 1 << i
 			if p != start {
 				paths[p] = m.buildPath(start, p, parents)
 			}
@@ -98,6 +100,7 @@ func (m *Map) buildPathsFrom(start point.Point2D) {
 			}
 		}
 	}
+	return keys
 }
 
 func (m *Map) buildPath(start, dest point.Point2D, parents map[point.Point2D]point.Point2D) Path {
@@ -126,11 +129,16 @@ func (m *Map) buildPath(start, dest point.Point2D, parents map[point.Point2D]poi
 func (m *Map) ShortestWalk() int {
 	m.buildPaths()
 	m.cachedResults = make(map[cacheKey]int)
-	return m.shortestWalk(m.start, 0)
+
+	var total int
+	for p, keys := range m.starts {
+		total += m.shortestWalk(p, keys)
+	}
+	return total
 }
 
 func (m *Map) shortestWalk(start point.Point2D, keys uint32) int {
-	if keys == (1<<len(m.keys))-1 {
+	if keys == 0 {
 		// got all the keys
 		return 0
 	}
@@ -149,11 +157,11 @@ func (m *Map) shortestWalk(start point.Point2D, keys uint32) int {
 		}
 		c := m.keys[p]
 		i := uint32(c - 97)
-		if keys&(1<<i) != 0 {
+		if keys&(1<<i) == 0 {
 			// we already have this key, don't need to go down the path
 			continue
 		}
-		if !path.CanVisit(keys) {
+		if !path.CanVisit(^keys) {
 			// we don't have the right key for the doors needed to get to this
 			// key, so ignore it for now.
 			continue
@@ -166,7 +174,7 @@ func (m *Map) shortestWalk(start point.Point2D, keys uint32) int {
 			continue
 		}
 
-		newKeys := keys | (1 << i)
+		newKeys := keys &^ (1 << i)
 		remaining := m.shortestWalk(p, newKeys)
 		if remaining == -1 {
 			// it's a dead end, so skip this point.

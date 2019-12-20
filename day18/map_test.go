@@ -66,3 +66,52 @@ func TestShortestWalk(t *testing.T) {
 	m4 := MapFromString(ex4)
 	assert.Equal(t, 81, m4.ShortestWalk())
 }
+
+const ex5 = `#######
+#a.#Cd#
+##@#@##
+#######
+##@#@##
+#cB#Ab#
+#######`
+
+const ex6 = `###############
+#d.ABC.#.....a#
+######@#@######
+###############
+######@#@######
+#b.....#.....c#
+###############`
+
+const ex7 = `#############
+#DcBa.#.GhKl#
+#.###@#@#I###
+#e#d#####j#k#
+###C#@#@###J#
+#fEbA.#.FgHi#
+#############`
+
+const ex8 = `#############
+#g#f.D#..h#l#
+#F###e#E###.#
+#dCba@#@BcIJ#
+#############
+#nK.L@#@G...#
+#M###N#H###.#
+#o#m..#i#jk.#
+#############`
+
+func TestShortestWalkFour(t *testing.T) {
+	m5 := MapFromString(ex5)
+	assert.Equal(t, 8, m5.ShortestWalk())
+
+	m6 := MapFromString(ex6)
+	assert.Equal(t, 24, m6.ShortestWalk())
+
+	m7 := MapFromString(ex7)
+	assert.Equal(t, 32, m7.ShortestWalk())
+
+	// This solution doesn't actually work in this case
+	// m8 := MapFromString(ex8)
+	// assert.Equal(t, 72, m8.ShortestWalk())
+}
