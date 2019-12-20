@@ -11,3 +11,12 @@ func (p Point2D) Plus(x, y int) Point2D {
 	p.Y += y
 	return p
 }
+
+func (p Point2D) CardinalNeighbors() []Point2D {
+	return []Point2D{
+		p.Plus(-1, 0),
+		p.Plus(1, 0),
+		p.Plus(0, -1),
+		p.Plus(0, 1),
+	}
+}
