@@ -8,13 +8,13 @@ import (
 )
 
 func TestEmptyQueue(t *testing.T) {
-	q := NewPointQueue(5)
+	q := NewQueue(5)
 	_, ok := q.Dequeue()
 	assert.False(t, ok)
 }
 
 func TestQueueNoResize(t *testing.T) {
-	q := NewPointQueue(10)
+	q := NewQueue(10)
 	q.Enqueue(newPoint(0, 0))
 	q.Enqueue(newPoint(1, 0))
 
@@ -42,7 +42,7 @@ func TestQueueNoResize(t *testing.T) {
 }
 
 func TestQueueResizeAligned(t *testing.T) {
-	q := NewPointQueue(3)
+	q := NewQueue(3)
 	q.Enqueue(newPoint(0, 0))
 	q.Enqueue(newPoint(1, 0))
 	q.Enqueue(newPoint(0, 1))
@@ -71,7 +71,7 @@ func TestQueueResizeAligned(t *testing.T) {
 }
 
 func TestQueueResizeNotAligned(t *testing.T) {
-	q := NewPointQueue(3)
+	q := NewQueue(3)
 	q.Enqueue(newPoint(0, 0))
 	q.Enqueue(newPoint(1, 0))
 	q.Enqueue(newPoint(0, 1))

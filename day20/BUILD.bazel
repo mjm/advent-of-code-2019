@@ -4,7 +4,7 @@ go_library(
     name = "go_default_library",
     srcs = [
         "map.go",
-        "point_queue.go",
+        "queue.go",
     ],
     importpath = "github.com/mjm/advent-of-code-2019/day20",
     visibility = ["//visibility:public"],
@@ -15,7 +15,7 @@ go_test(
     name = "go_default_test",
     srcs = [
         "map_test.go",
-        "point_queue_test.go",
+        "queue_test.go",
     ],
     embed = [":go_default_library"],
     deps = [
