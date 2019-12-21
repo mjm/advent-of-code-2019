@@ -1,0 +1,13 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["server.go"],
+    importpath = "github.com/mjm/advent-of-code-2019/pkg/intcode/server",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/intcode:go_default_library",
+        "//pkg/intcode/proto:go_default_library",
+        "@com_github_google_uuid//:go_default_library",
+    ],
+)

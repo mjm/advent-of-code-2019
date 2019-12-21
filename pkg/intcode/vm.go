@@ -31,13 +31,18 @@ func LoadFromString(s string) (*VM, error) {
 		memory = append(memory, i)
 	}
 
+	return NewVM(memory), nil
+}
+
+// NewVM creates an Intcode VM with the given memory values already set.
+func NewVM(memory []int) *VM {
 	return &VM{
 		Memory: memory,
 		Input: func() int {
 			panic("no input function set on VM")
 		},
 		Output: make(chan int),
-	}, nil
+	}
 }
 
 // Execute runs the loaded Intcode program to completion.

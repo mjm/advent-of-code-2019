@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+service Intcode {
+  rpc CreateVM(CreateVMRequest) returns (CreateVMResponse);
+  rpc RunVM(stream RunVMRequest) returns (stream RunVMResponse);
+}
+
+message CreateVMRequest { repeated int64 memory = 1; }
+
+message CreateVMResponse { string id = 1; }
+
+message RunVMRequest {
+  oneof Command {
+    StartVMCommand start = 1;
+    SendInputCommand send_input = 2;
+  }
+}
+
+message StartVMCommand { string id = 1; }
+
+message SendInputCommand { int64 value = 1; }
+
+message RunVMResponse {
+  enum Type {
+    HALT = 0;
+    OUTPUT = 1;
+    NEED_INPUT = 2;
+  }
+  Type type = 1;
+  int64 output = 2;
+}
