@@ -98,40 +98,17 @@ func MapFromString(s string) *Map {
 // Returns the list of points that form the path, starting from the goal and
 // ending with the start point, including both.
 func (m *Map) ShortestPath() []point.Point2D {
-	q := NewQueue(128)
-	parents := make(map[point.Point2D]point.Point2D)
-	q.Enqueue(m.start)
+	return m.shortestPath(false)
+}
 
-	for !q.Empty() {
-		el, _ := q.Dequeue()
-		p := el.(point.Point2D)
-		if p == m.end {
-			n := p
-			path := []point.Point2D{n}
-			for {
-				var ok bool
-				n, ok = parents[n]
-				if !ok {
-					return path
-				}
-
-				path = append(path, n)
-			}
-		}
-
-		for _, n := range m.neighbors[p] {
-			if n == m.start {
-				continue
-			}
-
-			if _, ok := parents[n]; !ok {
-				parents[n] = p
-				q.Enqueue(n)
-			}
-		}
-	}
-
-	return nil
+// ShortestPathLevels finds the shortest path from the start to the end of
+// the map while respecting the fact that there are different levels and the
+// level changes when going through a portal.
+//
+// Returns the list of points that form the path, starting from the goal and
+// ending with the start point, including both.
+func (m *Map) ShortestPathLevels() []point.Point2D {
+	return m.shortestPath(true)
 }
 
 type levelPoint struct {
@@ -139,7 +116,7 @@ type levelPoint struct {
 	level int
 }
 
-func (m *Map) ShortestPathLevels() []point.Point2D {
+func (m *Map) shortestPath(levels bool) []point.Point2D {
 	q := NewQueue(128)
 	parents := make(map[levelPoint]levelPoint)
 	q.Enqueue(levelPoint{m.start, 0})
@@ -168,12 +145,14 @@ func (m *Map) ShortestPathLevels() []point.Point2D {
 			}
 
 			nlp := levelPoint{point: n, level: level}
-			if offset, ok := m.portalOffset[pointPair{p, n}]; ok {
-				if level == 0 && offset < 0 {
-					continue
-				}
+			if levels {
+				if offset, ok := m.portalOffset[pointPair{p, n}]; ok {
+					if level == 0 && offset < 0 {
+						continue
+					}
 
-				nlp.level += offset
+					nlp.level += offset
+				}
 			}
 
 			if _, ok := parents[nlp]; !ok {
