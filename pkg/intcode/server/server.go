@@ -95,6 +95,7 @@ func (s *IntcodeServer) RunVM(stream pb.Intcode_RunVMServer) error {
 	done := make(chan error)
 	go func() {
 		done <- vm.Execute()
+		s.deleteVM(id)
 	}()
 
 	for out := range vm.Output {
@@ -116,4 +117,10 @@ func (s *IntcodeServer) RunVM(stream pb.Intcode_RunVMServer) error {
 
 	err = <-done
 	return err
+}
+
+func (s *IntcodeServer) deleteVM(id uuid.UUID) {
+	s.lock.Lock()
+	delete(s.vms, id)
+	s.lock.Unlock()
 }
