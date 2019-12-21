@@ -16,7 +16,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	droid := day21.NewDroid(day21.Program)
+	droid := day21.NewDroid(day21.WalkProgram)
 	damage, err := droid.Run(vm.Clone())
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -24,6 +24,15 @@ func main() {
 		return
 	}
 
-	log.Printf("The damage to the hull is %d", damage)
+	log.Printf("The damage to the hull (walking) is %d", damage)
 
+	droid = day21.NewDroid(day21.RunProgram)
+	damage, err = droid.Run(vm.Clone())
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+		return
+	}
+
+	log.Printf("The damage to the hull (running) is %d", damage)
 }
