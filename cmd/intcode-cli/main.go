@@ -5,12 +5,13 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"syscall"
-	"text/scanner"
 
 	"google.golang.org/grpc"
 
@@ -19,6 +20,7 @@ import (
 
 var (
 	server = flag.String("server", "0.0.0.0:8080", "Host and port to use to connect to server")
+	ascii  = flag.Bool("ascii", false, "Use ASCII mode for input and output.")
 )
 
 var client intcode.IntcodeClient
@@ -60,18 +62,16 @@ func main() {
 
 func loadProgram(filename string, r io.Reader) []int64 {
 	var memory []int64
-	var s scanner.Scanner
-	s.Init(r)
-	s.Filename = flag.Arg(0)
-	s.Mode = scanner.ScanInts
-	for tok := s.Scan(); tok != scanner.EOF; tok = s.Scan() {
-		if tok == scanner.Int {
-			n, err := strconv.ParseInt(s.TokenText(), 10, 64)
-			if err != nil {
-				log.Fatal(err)
-			}
-			memory = append(memory, n)
+	text, err := ioutil.ReadAll(r)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, num := range strings.Split(string(text), ",") {
+		n, err := strconv.ParseInt(num, 10, 64)
+		if err != nil {
+			log.Fatal(err)
 		}
+		memory = append(memory, n)
 	}
 	return memory
 }
@@ -89,6 +89,13 @@ func createVM(memory []int64) (string, error) {
 }
 
 func runVMRepl(id string) error {
+	var mode REPLMode
+	if *ascii {
+		mode = NewASCIIREPLMode()
+	} else {
+		mode = NewIntREPLMode()
+	}
+
 	stream, err := client.RunVM(context.Background())
 	if err != nil {
 		return fmt.Errorf("error trying to run VM: %w", err)
@@ -118,18 +125,9 @@ func runVMRepl(id string) error {
 			stream.CloseSend()
 			return nil
 		case intcode.RunVMResponse_OUTPUT:
-			fmt.Printf("%d\n", res.GetOutput())
+			mode.Print(res.GetOutput())
 		case intcode.RunVMResponse_NEED_INPUT:
-			var n int64
-			for {
-				fmt.Fprintf(os.Stderr, "> ")
-				_, err := fmt.Scanf("%d\n", &n)
-				if err != nil {
-					fmt.Fprintf(os.Stderr, "error reading input: %v\n", err)
-				} else {
-					break
-				}
-			}
+			n := mode.Read()
 
 			sendReq := &intcode.RunVMRequest{
 				Command: &intcode.RunVMRequest_SendInput{

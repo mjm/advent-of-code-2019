@@ -2,7 +2,10 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_library(
     name = "go_default_library",
-    srcs = ["main.go"],
+    srcs = [
+        "main.go",
+        "mode.go",
+    ],
     importpath = "github.com/mjm/advent-of-code-2019/cmd/intcode-cli",
     visibility = ["//visibility:private"],
     deps = [
