@@ -19,6 +19,16 @@ func main() {
 		net.Register(template.Clone())
 	}
 
-	x, y := net.Listen()
+	net.Listen()
+	x, y := net.NAT().MonitorOnce()
 	log.Printf("The packet sent to 255 was %d, %d", x, y)
+
+	net = day23.NewNetwork()
+	for i := 0; i < 50; i++ {
+		net.Register(template.Clone())
+	}
+
+	net.Listen()
+	x, y = net.NAT().Monitor(net)
+	log.Printf("The packet sent to the NAT twice in a row was %d, %d", x, y)
 }
