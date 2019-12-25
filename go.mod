@@ -9,6 +9,7 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.10 // indirect
+	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
 	google.golang.org/grpc v1.26.0
 )
