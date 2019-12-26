@@ -36,8 +36,11 @@ defmodule Intcode.Computer do
     opcode = Intcode.Instruction.opcode(value)
     num_params = Intcode.Instruction.param_count(opcode)
 
-    params = for i <- 1..num_params do
-      Intcode.Memory.get(memory, pc+i)
+    params = case num_params do
+      0 -> []
+      _ -> for i <- 1..num_params do
+        Intcode.Memory.get(memory, pc+i)
+      end
     end
 
     {:ok, {opcode, List.to_tuple(params)}, pc + 1 + num_params}
@@ -46,6 +49,7 @@ defmodule Intcode.Computer do
   defp execute_instruction(inst, memory, pc) do
     Logger.metadata(inst: inspect(inst), pc: pc)
     Logger.debug("executing instruction")
+
     case inst do
       {:add, {x, y, z}} ->
         xx = Intcode.Memory.get(memory, x)
@@ -57,9 +61,8 @@ defmodule Intcode.Computer do
       {:mult, {x, y, z}} ->
         xx = Intcode.Memory.get(memory, x)
         yy = Intcode.Memory.get(memory, y)
-        zz = Intcode.Memory.get(memory, z)
 
-        Intcode.Memory.set(memory, zz, xx * yy)
+        Intcode.Memory.set(memory, z, xx * yy)
         send(self(), :pop_inst)
         pc
       {:halt, _} ->
