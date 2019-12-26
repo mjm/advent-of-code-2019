@@ -1,6 +1,9 @@
 defmodule Intcode.Computer do
   use Task
+  use Bitwise
   require Logger
+
+  defstruct [:memory, :handler, pc: 0]
 
   def start_link(data, handler) do
     Task.start_link(__MODULE__, :run, [data, handler])
@@ -10,64 +13,73 @@ defmodule Intcode.Computer do
     Task.async(__MODULE__, :run, [data, handler])
   end
 
-  def run(data, _handler) do
+  def run(data, handler) do
     {:ok, memory} = Intcode.Memory.start_link(data)
     send(self(), :pop_inst)
-    :ok = loop({memory, 0})
+    :ok = loop(%Intcode.Computer{memory: memory, handler: handler})
     {:ok, memory}
   end
 
-  defp loop(state) do
-    {memory, pc} = state
+  defp loop(computer) do
     receive do
       :pop_inst ->
-        {:ok, inst, new_pc} = next_instruction(memory, pc)
+        {:ok, inst, computer} = next_instruction(computer)
         send(self(), {:exec_inst, inst})
-        loop({memory, new_pc})
+        loop(computer)
       {:exec_inst, inst} ->
-        new_pc = execute_instruction(inst, memory, pc)
-        loop({memory, new_pc})
+        loop(execute_instruction(inst, computer))
       :halt -> :ok
     end
   end
 
-  defp next_instruction(memory, pc) do
+  defp next_instruction(computer) do
+    %Intcode.Computer{memory: memory, pc: pc} = computer
     value = Intcode.Memory.get(memory, pc)
-    opcode = Intcode.Instruction.opcode(value)
-    num_params = Intcode.Instruction.param_count(opcode)
+    {opcode, modes} = Intcode.Instruction.decode(value)
 
-    params = case num_params do
-      0 -> []
-      _ -> for i <- 1..num_params do
-        Intcode.Memory.get(memory, pc+i)
-      end
+    params = for {m, i} <- Enum.with_index(modes) do
+      {Intcode.Memory.get(memory, pc+i+1), m}
     end
 
-    {:ok, {opcode, List.to_tuple(params)}, pc + 1 + num_params}
+    {:ok, {opcode, List.to_tuple(params)}, %{computer | pc: pc + 1 + Enum.count(params)}}
   end
 
-  defp execute_instruction(inst, memory, pc) do
+  defp execute_instruction(inst, computer) do
+    %Intcode.Computer{memory: memory, pc: pc} = computer
+
     Logger.metadata(inst: inspect(inst), pc: pc)
     Logger.debug("executing instruction")
 
     case inst do
       {:add, {x, y, z}} ->
-        xx = Intcode.Memory.get(memory, x)
-        yy = Intcode.Memory.get(memory, y)
+        xx = get_param(memory, x)
+        yy = get_param(memory, y)
 
-        Intcode.Memory.set(memory, z, xx + yy)
+        set_param(memory, z, xx + yy)
         send(self(), :pop_inst)
-        pc
+        computer
       {:mult, {x, y, z}} ->
-        xx = Intcode.Memory.get(memory, x)
-        yy = Intcode.Memory.get(memory, y)
+        xx = get_param(memory, x)
+        yy = get_param(memory, y)
 
-        Intcode.Memory.set(memory, z, xx * yy)
+        set_param(memory, z, xx * yy)
         send(self(), :pop_inst)
-        pc
+        computer
       {:halt, _} ->
         send(self(), :halt)
-        pc
+        computer
     end
+  end
+
+  defp get_param(memory, {i, :abs}) do
+    Intcode.Memory.get(memory, i)
+  end
+
+  defp get_param(_memory, {i, :imm}) do
+    i
+  end
+
+  defp set_param(memory, {i, :abs}, value) do
+    Intcode.Memory.set(memory, i, value)
   end
 end
