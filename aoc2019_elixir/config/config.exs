@@ -16,3 +16,6 @@ import Config
 #       format: "$date $time [$level] $metadata$message\n",
 #       metadata: [:user_id]
 #
+config :logger, :console,
+  level: :info,
+  metadata: [:inst, :pc]
