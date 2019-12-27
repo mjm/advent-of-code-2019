@@ -3,7 +3,7 @@ defmodule Intcode.Computer do
   use Bitwise
   require Logger
 
-  defstruct [:memory, :handler, pc: 0]
+  defstruct [:memory, :handler, :input_dest, pc: 0]
 
   def start_link(data, handler) do
     Task.start_link(__MODULE__, :run, [data, handler])
@@ -20,6 +20,10 @@ defmodule Intcode.Computer do
     {:ok, memory}
   end
 
+  def send_input(computer, value) do
+    send(computer, {:input, value})
+  end
+
   defp loop(computer) do
     receive do
       :pop_inst ->
@@ -28,6 +32,10 @@ defmodule Intcode.Computer do
         loop(computer)
       {:exec_inst, inst} ->
         loop(execute_instruction(inst, computer))
+      {:input, value} ->
+        set_param(computer.memory, computer.input_dest, value)
+        send(self(), :pop_inst)
+        loop(%{computer | input_dest: nil})
       :halt -> :ok
     end
   end
@@ -65,8 +73,46 @@ defmodule Intcode.Computer do
         set_param(memory, z, xx * yy)
         send(self(), :pop_inst)
         computer
+      {:input, {x}} ->
+        send(computer.handler, {:input, self()})
+        %{computer | input_dest: x}
+      {:output, {x}} ->
+        send(computer.handler, {:output, self(), get_param(memory, x)})
+        send(self(), :pop_inst)
+        computer
+      {:jump_true, {p, addr}} ->
+        send(self(), :pop_inst)
+        case get_param(memory, p) do
+          0 -> computer
+          _ -> %{computer | pc: get_param(memory, addr)}
+        end
+      {:jump_false, {p, addr}} ->
+        send(self(), :pop_inst)
+        case get_param(memory, p) do
+          0 -> %{computer | pc: get_param(memory, addr)}
+          _ -> computer
+        end
+      {:less_than, {x, y, z}} ->
+        cond do
+          get_param(memory, x) < get_param(memory, y) ->
+            set_param(memory, z, 1)
+          true -> set_param(memory, z, 0)
+        end
+        send(self(), :pop_inst)
+        computer
+      {:equals, {x, y, z}} ->
+        cond do
+          get_param(memory, x) == get_param(memory, y) ->
+            set_param(memory, z, 1)
+          true -> set_param(memory, z, 0)
+        end
+        send(self(), :pop_inst)
+        computer
       {:halt, _} ->
         send(self(), :halt)
+        if computer.handler != nil do
+          send(computer.handler, {:halt, self()})
+        end
         computer
     end
   end

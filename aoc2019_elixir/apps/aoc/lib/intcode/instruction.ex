@@ -33,6 +33,10 @@ defmodule Intcode.Instruction do
       2 -> :mult
       3 -> :input
       4 -> :output
+      5 -> :jump_true
+      6 -> :jump_false
+      7 -> :less_than
+      8 -> :equals
       99 -> :halt
     end
   end
@@ -43,6 +47,10 @@ defmodule Intcode.Instruction do
       :mult -> 3
       :input -> 1
       :output -> 1
+      :jump_true -> 2
+      :jump_false -> 2
+      :less_than -> 3
+      :equals -> 3
       :halt -> 0
     end
   end

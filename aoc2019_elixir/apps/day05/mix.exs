@@ -1,9 +1,9 @@
-defmodule Days.MixProject do
+defmodule Day05.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :days,
+      app: :day05,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -18,17 +18,14 @@ defmodule Days.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
-      mod: {Days, []}
+      extra_applications: [:logger]
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:day01, in_umbrella: true},
-      {:day02, in_umbrella: true},
-      {:day05, in_umbrella: true},
+      {:aoc, in_umbrella: true}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       # {:sibling_app_in_umbrella, in_umbrella: true}
