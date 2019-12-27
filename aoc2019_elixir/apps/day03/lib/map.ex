@@ -8,15 +8,17 @@ defmodule Day03.Map do
   end
 
   def nearest_intersection(m) do
-    Enum.filter(m, fn {_, cells} -> Enum.count(cells) >= 2 end) |>
-      Enum.map(fn {point, _} -> {point, point_distance(point)} end) |>
-      Enum.min_by(fn {_, distance} -> distance end)
+    Enum.filter(m, fn {_, cells} -> Enum.count(cells) >= 2 end)
+    |> Enum.map(fn {point, _} -> {point, point_distance(point)} end)
+    |> Enum.min_by(fn {_, distance} -> distance end)
   end
 
   def shortest_intersection(m) do
-    Enum.filter(m, fn {_, cells} -> Enum.count(cells) >= 2 end) |>
-      Enum.map(fn {point, cells} -> {point, Enum.reduce(cells, 0, fn {_, steps}, acc -> acc + steps end)} end) |>
-      Enum.min_by(fn {_, steps} -> steps end)
+    Enum.filter(m, fn {_, cells} -> Enum.count(cells) >= 2 end)
+    |> Enum.map(fn {point, cells} ->
+      {point, Enum.reduce(cells, 0, fn {_, steps}, acc -> acc + steps end)}
+    end)
+    |> Enum.min_by(fn {_, steps} -> steps end)
   end
 
   defp point_distance({x, y}) do

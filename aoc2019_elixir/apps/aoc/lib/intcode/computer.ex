@@ -131,6 +131,7 @@ defmodule Intcode.Computer do
 
       {:add_rb, {x}} ->
         send(self(), :pop_inst)
+
         Map.update!(computer, :relative_base, fn rb ->
           rb + get_param(computer, x)
         end)
