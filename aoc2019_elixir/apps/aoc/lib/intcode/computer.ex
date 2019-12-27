@@ -3,7 +3,7 @@ defmodule Intcode.Computer do
   use Bitwise
   require Logger
 
-  defstruct [:memory, :handler, :input_dest, pc: 0]
+  defstruct [:memory, :handler, :input_dest, pc: 0, relative_base: 0]
 
   def start_link(data, handler) do
     Task.start_link(__MODULE__, :run, [data, handler])
@@ -35,7 +35,7 @@ defmodule Intcode.Computer do
         loop(execute_instruction(inst, computer))
 
       {:input, value} ->
-        set_param(computer.memory, computer.input_dest, value)
+        set_param(computer, computer.input_dest, value)
         send(self(), :pop_inst)
         loop(%{computer | input_dest: nil})
 
@@ -65,18 +65,18 @@ defmodule Intcode.Computer do
 
     case inst do
       {:add, {x, y, z}} ->
-        xx = get_param(memory, x)
-        yy = get_param(memory, y)
+        xx = get_param(computer, x)
+        yy = get_param(computer, y)
 
-        set_param(memory, z, xx + yy)
+        set_param(computer, z, xx + yy)
         send(self(), :pop_inst)
         computer
 
       {:mult, {x, y, z}} ->
-        xx = get_param(memory, x)
-        yy = get_param(memory, y)
+        xx = get_param(computer, x)
+        yy = get_param(computer, y)
 
-        set_param(memory, z, xx * yy)
+        set_param(computer, z, xx * yy)
         send(self(), :pop_inst)
         computer
 
@@ -85,33 +85,33 @@ defmodule Intcode.Computer do
         %{computer | input_dest: x}
 
       {:output, {x}} ->
-        send(computer.handler, {:output, self(), get_param(memory, x)})
+        send(computer.handler, {:output, self(), get_param(computer, x)})
         send(self(), :pop_inst)
         computer
 
       {:jump_true, {p, addr}} ->
         send(self(), :pop_inst)
 
-        case get_param(memory, p) do
+        case get_param(computer, p) do
           0 -> computer
-          _ -> %{computer | pc: get_param(memory, addr)}
+          _ -> %{computer | pc: get_param(computer, addr)}
         end
 
       {:jump_false, {p, addr}} ->
         send(self(), :pop_inst)
 
-        case get_param(memory, p) do
-          0 -> %{computer | pc: get_param(memory, addr)}
+        case get_param(computer, p) do
+          0 -> %{computer | pc: get_param(computer, addr)}
           _ -> computer
         end
 
       {:less_than, {x, y, z}} ->
         cond do
-          get_param(memory, x) < get_param(memory, y) ->
-            set_param(memory, z, 1)
+          get_param(computer, x) < get_param(computer, y) ->
+            set_param(computer, z, 1)
 
           true ->
-            set_param(memory, z, 0)
+            set_param(computer, z, 0)
         end
 
         send(self(), :pop_inst)
@@ -119,15 +119,21 @@ defmodule Intcode.Computer do
 
       {:equals, {x, y, z}} ->
         cond do
-          get_param(memory, x) == get_param(memory, y) ->
-            set_param(memory, z, 1)
+          get_param(computer, x) == get_param(computer, y) ->
+            set_param(computer, z, 1)
 
           true ->
-            set_param(memory, z, 0)
+            set_param(computer, z, 0)
         end
 
         send(self(), :pop_inst)
         computer
+
+      {:add_rb, {x}} ->
+        send(self(), :pop_inst)
+        Map.update!(computer, :relative_base, fn rb ->
+          rb + get_param(computer, x)
+        end)
 
       {:halt, _} ->
         send(self(), :halt)
@@ -140,15 +146,23 @@ defmodule Intcode.Computer do
     end
   end
 
-  defp get_param(memory, {i, :abs}) do
+  defp get_param(%Intcode.Computer{memory: memory}, {i, :abs}) do
     Intcode.Memory.get(memory, i)
   end
 
-  defp get_param(_memory, {i, :imm}) do
+  defp get_param(_computer, {i, :imm}) do
     i
   end
 
-  defp set_param(memory, {i, :abs}, value) do
+  defp get_param(%Intcode.Computer{memory: memory, relative_base: base}, {i, :rel}) do
+    Intcode.Memory.get(memory, base + i)
+  end
+
+  defp set_param(%Intcode.Computer{memory: memory}, {i, :abs}, value) do
     Intcode.Memory.set(memory, i, value)
+  end
+
+  defp set_param(%Intcode.Computer{memory: memory, relative_base: base}, {i, :rel}, value) do
+    Intcode.Memory.set(memory, base + i, value)
   end
 end

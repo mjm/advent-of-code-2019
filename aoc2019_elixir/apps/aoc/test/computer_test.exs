@@ -55,4 +55,40 @@ defmodule Intcode.ComputerTest do
     Intcode.Computer.async(data, handler.pid)
     assert Task.await(handler) == 1
   end
+
+  test "computer can handle relative base" do
+    data = Intcode.memory_from_string("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99")
+
+    loop = fn loop, values ->
+      receive do
+        {:output, _, val} ->
+          loop.(loop, [val | values])
+
+        {:halt, _} ->
+          Enum.reverse(values)
+      end
+    end
+
+    handler = Task.async(fn -> loop.(loop, []) end)
+    Intcode.Computer.async(data, handler.pid)
+
+    assert Task.await(handler) == [
+             109,
+             1,
+             204,
+             -1,
+             1001,
+             100,
+             1,
+             100,
+             1008,
+             100,
+             16,
+             101,
+             1006,
+             101,
+             0,
+             99
+           ]
+  end
 end

@@ -6,7 +6,7 @@ defmodule Intcode.Memory do
   end
 
   def get(memory, index) do
-    Agent.get(memory, &Map.get(&1, index))
+    Agent.get(memory, &Map.get(&1, index, 0))
   end
 
   def set(memory, index, value) do

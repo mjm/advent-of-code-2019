@@ -44,6 +44,7 @@ defmodule Intcode.Instruction do
       6 -> :jump_false
       7 -> :less_than
       8 -> :equals
+      9 -> :add_rb
       99 -> :halt
     end
   end
@@ -58,6 +59,7 @@ defmodule Intcode.Instruction do
       :jump_false -> 2
       :less_than -> 3
       :equals -> 3
+      :add_rb -> 1
       :halt -> 0
     end
   end
