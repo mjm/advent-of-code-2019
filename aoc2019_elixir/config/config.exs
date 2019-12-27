@@ -18,4 +18,4 @@ import Config
 #
 config :logger, :console,
   level: :info,
-  metadata: [:inst, :pc]
+  metadata: [:inst, :pc, :x, :y, :prev_y, :mode]
