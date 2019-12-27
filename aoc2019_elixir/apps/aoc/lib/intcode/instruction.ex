@@ -22,8 +22,15 @@ defmodule Intcode.Instruction do
 
   defp param_modes(n, modes, acc) do
     case n do
-      0 -> acc
-      _ -> param_modes(n - 1, Integer.floor_div(modes, 10), acc ++ [param_mode(Integer.mod(modes, 10))])
+      0 ->
+        acc
+
+      _ ->
+        param_modes(
+          n - 1,
+          Integer.floor_div(modes, 10),
+          acc ++ [param_mode(Integer.mod(modes, 10))]
+        )
     end
   end
 

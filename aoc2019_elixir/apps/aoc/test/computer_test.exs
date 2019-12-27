@@ -39,15 +39,18 @@ defmodule Intcode.ComputerTest do
 
   test "computer can handle single input and single output" do
     data = Intcode.memory_from_string("3,9,8,9,10,9,4,9,99,-1,8")
-    loop = fn (loop) ->
+
+    loop = fn loop ->
       receive do
         {:input, pid} ->
           Intcode.send_input(pid, 8)
           loop.(loop)
+
         {:output, _, val} ->
           val
       end
     end
+
     handler = Task.async(fn -> loop.(loop) end)
     Intcode.Computer.async(data, handler.pid)
     assert Task.await(handler) == 1

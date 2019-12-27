@@ -1,6 +1,7 @@
 defmodule Day07.Connector do
   def async_with_settings(settings) do
-    Enum.reverse(settings) |> Enum.reduce([], fn setting, amps ->
+    Enum.reverse(settings)
+    |> Enum.reduce([], fn setting, amps ->
       case amps do
         [] -> [async(nil, setting)]
         [hd | tl] -> [async(hd.pid, setting) | [hd | tl]]
@@ -34,7 +35,9 @@ defmodule Day07.Connector do
     receive do
       {:input, pid} ->
         case queue do
-          [] -> loop(next, pid, [], last_output)
+          [] ->
+            loop(next, pid, [], last_output)
+
           [hd | tl] ->
             Intcode.send_input(pid, hd)
             loop(next, nil, tl, last_output)
@@ -44,6 +47,7 @@ defmodule Day07.Connector do
         case waiting_pid do
           nil ->
             loop(next, nil, queue ++ [value], last_output)
+
           pid ->
             Intcode.send_input(pid, value)
             loop(next, nil, [], last_output)
@@ -51,16 +55,19 @@ defmodule Day07.Connector do
 
       {:output, _, value} ->
         case next do
-          nil -> value
+          nil ->
+            value
+
           _ ->
             send_input(next, value)
             loop(next, waiting_pid, queue, value)
         end
-      
+
       {:set_next, new_next} ->
         loop(new_next, waiting_pid, queue, last_output)
 
-      {:halt, _} -> last_output
+      {:halt, _} ->
+        last_output
     end
   end
 end

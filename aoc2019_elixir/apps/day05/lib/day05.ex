@@ -18,8 +18,10 @@ defmodule Day05 do
       {:input, pid} ->
         Intcode.send_input(pid, 1)
         part1_loop(codes)
+
       {:output, _, value} ->
         part1_loop([value | codes])
+
       {:halt, _} ->
         Enum.reverse(codes)
     end
@@ -37,6 +39,7 @@ defmodule Day05 do
       {:input, pid} ->
         Intcode.send_input(pid, 5)
         part2_loop()
+
       {:output, _, value} ->
         value
     end

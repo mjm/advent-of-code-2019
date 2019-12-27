@@ -2,7 +2,7 @@ defmodule Intcode.Memory do
   use Agent
 
   def start_link(data) do
-    Agent.start_link fn -> data_to_map(data) end
+    Agent.start_link(fn -> data_to_map(data) end)
   end
 
   def get(memory, index) do

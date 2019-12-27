@@ -8,7 +8,7 @@ defmodule Days.Supervisor do
   @impl true
   def init(:ok) do
     children = [
-      {Day01, name: Day01},
+      {Day01, name: Day01}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

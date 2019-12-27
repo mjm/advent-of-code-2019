@@ -6,14 +6,18 @@ defmodule Day07.Permutations do
 
   defp generate(k, nums, acc) do
     case k do
-      1 -> {nums, [nums | acc]}
+      1 ->
+        {nums, [nums | acc]}
+
       _ ->
-        Enum.reduce(0..(k-2), generate(k-1, nums, acc), fn i, {nums, acc} ->
-          new_nums = cond do
-            Integer.mod(k, 2) == 0 -> swap(nums, i, k-1)
-            true -> swap(nums, 0, k-1)
-          end
-          generate(k-1, new_nums, acc)
+        Enum.reduce(0..(k - 2), generate(k - 1, nums, acc), fn i, {nums, acc} ->
+          new_nums =
+            cond do
+              Integer.mod(k, 2) == 0 -> swap(nums, i, k - 1)
+              true -> swap(nums, 0, k - 1)
+            end
+
+          generate(k - 1, new_nums, acc)
         end)
     end
   end

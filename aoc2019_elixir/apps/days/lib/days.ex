@@ -8,6 +8,7 @@ defmodule Days do
 
   def solve(day, part) do
     input = day.input()
+
     case part do
       :part1 -> day.part1(input)
       :part2 -> day.part2(input)

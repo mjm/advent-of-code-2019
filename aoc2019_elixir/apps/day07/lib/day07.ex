@@ -8,7 +8,7 @@ defmodule Day07 do
 
   @impl Aoc.Problem
   def part1(input) do
-    Day07.Permutations.all(0..4) |> Enum.map(&part1_signal(input, &1)) |> Enum.max
+    Day07.Permutations.all(0..4) |> Enum.map(&part1_signal(input, &1)) |> Enum.max()
   end
 
   defp part1_signal(input, settings) do
@@ -17,7 +17,7 @@ defmodule Day07 do
 
   @impl Aoc.Problem
   def part2(input) do
-    Day07.Permutations.all(5..9) |> Enum.map(&part2_signal(input, &1)) |> Enum.max
+    Day07.Permutations.all(5..9) |> Enum.map(&part2_signal(input, &1)) |> Enum.max()
   end
 
   defp part2_signal(input, settings) do
