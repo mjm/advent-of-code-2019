@@ -9,9 +9,9 @@ defmodule Aoc2019Elixir.MixProject do
       deps: deps(),
       docs: [
         groups_for_modules: [
-          "Common": [~r/^Aoc/, ~r/^Days/],
-          "Intcode": ~r/^Intcode/,
-          "Problems": ~r/^Day[[:digit:]]{2}/,
+          Common: [~r/^Aoc/, ~r/^Days/],
+          Intcode: ~r/^Intcode/,
+          Problems: ~r/^Day[[:digit:]]{2}/
         ]
       ]
     ]
@@ -24,7 +24,7 @@ defmodule Aoc2019Elixir.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
     ]
   end
 end

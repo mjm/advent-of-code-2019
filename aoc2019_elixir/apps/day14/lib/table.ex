@@ -14,12 +14,12 @@ defmodule Day14.Table do
   @typedoc """
   A table of reactions.
   """
-  @opaque t :: :digraph.graph
+  @opaque t :: :digraph.graph()
 
   @doc """
   Create a new reaction table from a string of lines describing each reaction.
   """
-  @spec from_string(String.t) :: t
+  @spec from_string(String.t()) :: t
   def from_string(str) do
     String.split(str, "\n") |> Enum.map(&Reaction.from_string/1) |> new
   end
@@ -27,18 +27,21 @@ defmodule Day14.Table do
   @doc """
   Create a new reaction table from a list of reactions.
   """
-  @spec new(list(Reaction.t)) :: t
+  @spec new(list(Reaction.t())) :: t
   def new(reactions) do
     g = :digraph.new([:acyclic])
     :digraph.add_vertex(g, "ORE")
-    Enum.each reactions, fn {_, {n, name}} ->
+
+    Enum.each(reactions, fn {_, {n, name}} ->
       :digraph.add_vertex(g, name, n)
-    end
-    Enum.each reactions, fn {ins, {_, name_out}} ->
-      Enum.each ins, fn {n_in, name_in} ->
+    end)
+
+    Enum.each(reactions, fn {ins, {_, name_out}} ->
+      Enum.each(ins, fn {n_in, name_in} ->
         [:"$e" | _] = :digraph.add_edge(g, name_out, name_in, n_in)
-      end
-    end
+      end)
+    end)
+
     g
   end
 
@@ -63,37 +66,45 @@ defmodule Day14.Table do
       31
 
   |
-  @spec required_ore(t, Reaction.component) :: number
+  @spec required_ore(t, Reaction.component()) :: number
   def required_ore(table, component)
+
   def required_ore(table, {amount, material}) do
     required_ore(table, sorted_materials(table), %{material => amount})
   end
 
   defp required_ore(_, ["ORE" | _], %{"ORE" => n}), do: n
+
   defp required_ore(table, [mat | rest], reqs) do
     case Map.get(reqs, mat, 0) do
-      0 -> required_ore(table, rest, reqs)
+      0 ->
+        required_ore(table, rest, reqs)
+
       amount ->
         ratio = ceil(amount / output_amount(table, mat))
-        required_ore(table, rest,
+
+        required_ore(
+          table,
+          rest,
           Enum.reduce(reagents(table, mat), Map.delete(reqs, mat), fn {in_mat, n_in}, reqs ->
             new_amount = ratio * n_in
             Map.update(reqs, in_mat, new_amount, &(&1 + new_amount))
-          end))
+          end)
+        )
     end
   end
-  
+
   defp output_amount(table, mat) do
     {_, amount} = :digraph.vertex(table, mat)
     amount
   end
 
   defp reagents(table, mat) do
-    :digraph.out_edges(table, mat) |>
-      Enum.map(fn e ->
-        {_, _, input, amount} = :digraph.edge(table, e)
-        {input, amount}
-      end)
+    :digraph.out_edges(table, mat)
+    |> Enum.map(fn e ->
+      {_, _, input, amount} = :digraph.edge(table, e)
+      {input, amount}
+    end)
   end
 
   @doc """
@@ -107,6 +118,7 @@ defmodule Day14.Table do
 
   defp fuel_possible(table, max_ore, lower_bound) do
     ore = required_ore(table, {lower_bound, "FUEL"})
+
     cond do
       ore < max_ore -> fuel_possible(table, max_ore, lower_bound + 50000)
       true -> fuel_possible(table, max_ore, lower_bound - 50000, lower_bound)
@@ -115,6 +127,7 @@ defmodule Day14.Table do
 
   defp fuel_possible(table, max_ore, lower_bound, upper_bound) do
     ore = required_ore(table, {lower_bound, "FUEL"})
+
     cond do
       ore > max_ore -> lower_bound - 1
       true -> fuel_possible(table, max_ore, lower_bound + 1, upper_bound)

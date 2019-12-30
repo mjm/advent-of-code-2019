@@ -6,7 +6,7 @@ defmodule Day14 do
   alias Day14.Table
 
   @behaviour Aoc.Problem
-  
+
   @impl Aoc.Problem
   def input do
     Table.from_string(File.read!("../day14/input.txt"))
@@ -19,6 +19,6 @@ defmodule Day14 do
 
   @impl Aoc.Problem
   def part2(input) do
-    Table.fuel_possible(input, 1000000000000)
+    Table.fuel_possible(input, 1_000_000_000_000)
   end
 end

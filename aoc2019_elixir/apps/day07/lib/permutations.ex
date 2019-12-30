@@ -6,7 +6,7 @@ defmodule Day07.Permutations do
   @doc """
   Returns a list of all possible permutations of the given enumerable.
   """
-  @spec all(Enum.t) :: list(list(any))
+  @spec all(Enum.t()) :: list(list(any))
   def all(nums) do
     {_, acc} = generate(Enum.count(nums), Enum.to_list(nums), [])
     acc

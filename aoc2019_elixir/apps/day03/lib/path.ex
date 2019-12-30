@@ -33,12 +33,12 @@ defmodule Day03.Path do
       ]
 
   """
-  @spec from_string(String.t) :: t
+  @spec from_string(String.t()) :: t
   def from_string(str) do
     String.split(str, ",") |> Enum.map(&segment_from_string/1)
   end
 
-  @spec segment_from_string(String.t) :: segment
+  @spec segment_from_string(String.t()) :: segment
   defp segment_from_string(<<dir::utf8, dist::binary>>) do
     distance = String.to_integer(dist)
 
@@ -54,7 +54,7 @@ defmodule Day03.Path do
   Walk the path on the given map, marking the number of steps required to get to
   each point along the path. Returns the updated map.
   """
-  @spec apply(Day03.Map.t, Day03.Map.id, t) :: Day03.Map.t
+  @spec apply(Day03.Map.t(), Day03.Map.id(), t) :: Day03.Map.t()
   def apply(m, id, path) do
     {m, _, _} =
       Enum.reduce(path, {m, {0, 0}, 0}, fn segment, {m, start, steps} ->

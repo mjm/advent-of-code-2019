@@ -42,7 +42,7 @@ defmodule Intcode.Computer do
 
   This allows waiting for the computer to halt using `Task.await/2`.
   """
-  @spec async(Memory.data, handler) :: Task.t
+  @spec async(Memory.data(), handler) :: Task.t()
   def async(data, handler) do
     Task.async(__MODULE__, :run, [data, handler])
   end
@@ -54,7 +54,7 @@ defmodule Intcode.Computer do
   in the memory data finishes. Instead, you can use `Intcode.Computer.async` to spawn a task
   to run the computer in another process.
   """
-  @spec run(Memory.data, handler) :: {:ok, Memory.t}
+  @spec run(Memory.data(), handler) :: {:ok, Memory.t()}
   def run(data, handler) do
     {:ok, memory} = Memory.start_link(data)
     send(self(), :pop_inst)

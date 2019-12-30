@@ -10,8 +10,8 @@ defmodule Day22 do
   @impl Aoc.Problem
   def input do
     File.read!("../day22/input.txt")
-      |> String.split("\n")
-      |> Enum.map(&Move.from_string/1)
+    |> String.split("\n")
+    |> Enum.map(&Move.from_string/1)
   end
 
   @impl Aoc.Problem
@@ -23,8 +23,8 @@ defmodule Day22 do
 
   @impl Aoc.Problem
   def part2(input) do
-    size = 119315717514047
-    {m, b} = Move.undo_list(input, size) |> Move.repeat(size, 101741582076661)
+    size = 119_315_717_514_047
+    {m, b} = Move.undo_list(input, size) |> Move.repeat(size, 101_741_582_076_661)
     Integer.mod(2020 * m + b, size)
   end
 end

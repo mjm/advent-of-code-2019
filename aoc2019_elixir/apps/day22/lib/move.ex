@@ -32,7 +32,7 @@ defmodule Day22.Move do
       iex> Day22.Move.from_string("deal into new stack")
       :reverse
   """
-  @spec from_string(String.t) :: t
+  @spec from_string(String.t()) :: t
   def from_string(str)
 
   def from_string("deal with increment " <> n), do: {:deal, String.to_integer(n)}
@@ -160,9 +160,13 @@ defmodule Day22.Move do
 
   def repeat({m, b}, size, times) do
     mtimes = pow(m, times, size)
-    mod({
-      mtimes,
-      b * (mtimes - 1) * mod_inv(m - 1, size)
-    }, size)
+
+    mod(
+      {
+        mtimes,
+        b * (mtimes - 1) * mod_inv(m - 1, size)
+      },
+      size
+    )
   end
 end

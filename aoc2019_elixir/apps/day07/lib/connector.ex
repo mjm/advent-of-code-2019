@@ -25,7 +25,7 @@ defmodule Day07.Connector do
   Each setting should be unique: the list should contain no duplicates.
   """
   @type phase_settings :: list(number)
-  
+
   @doc """
   Create a list of connectors with the given phase settings.
 
@@ -34,7 +34,7 @@ defmodule Day07.Connector do
   in the list. The final connector will have no `next` connector and will
   simply return the output it receives from its `Intcode.Computer`.
   """
-  @spec async_with_settings(phase_settings) :: list(Task.t)
+  @spec async_with_settings(phase_settings) :: list(Task.t())
   def async_with_settings(settings) do
     Enum.reverse(settings)
     |> Enum.reduce([], fn setting, amps ->
@@ -52,14 +52,14 @@ defmodule Day07.Connector do
   send its output back to the first connector, creating a feedback loop. Only
   when the final `Intcode.Computer` halts will the output be returned.
   """
-  @spec async_with_feedback(phase_settings) :: list(Task.t)
+  @spec async_with_feedback(phase_settings) :: list(Task.t())
   def async_with_feedback(settings) do
     conns = async_with_settings(settings)
     set_next(List.last(conns).pid, List.first(conns).pid)
     conns
   end
 
-  @spec async(t | nil, number) :: Task.t
+  @spec async(t | nil, number) :: Task.t()
   defp async(next, setting) do
     Task.async(__MODULE__, :run, [next, setting])
   end

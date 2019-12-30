@@ -13,7 +13,7 @@ defmodule Day14.Reaction do
   An input or output to a reaction. Includes the name of the material and the amount
   required or produced by the reaction.
   """
-  @type component :: {number, String.t}
+  @type component :: {number, String.t()}
 
   @doc """
   Parse a reaction from a string describing the inputs and outputs.
@@ -26,16 +26,17 @@ defmodule Day14.Reaction do
       {[{22, "VJHF"}, {37, "MNCFX"}], {5, "FWMGM"}}
 
   """
-  @spec from_string(String.t) :: t
+  @spec from_string(String.t()) :: t
   def from_string(str) do
     [ins, out] = String.split(str, " => ")
+
     {
       Enum.map(String.split(ins, ", "), &component_from_string/1),
       component_from_string(out)
     }
   end
 
-  @spec component_from_string(String.t) :: component
+  @spec component_from_string(String.t()) :: component
   defp component_from_string(str) do
     [amount, label] = String.split(str, " ")
     {String.to_integer(amount), label}

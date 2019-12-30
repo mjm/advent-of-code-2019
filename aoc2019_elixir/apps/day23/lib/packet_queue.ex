@@ -19,14 +19,19 @@ defmodule Day23.PacketQueue do
   """
   @type t() :: pid()
 
-  defstruct router: nil, addr: nil, queue: [], awaiting_addr: nil, partial_packet: [], idle_count: 0
+  defstruct router: nil,
+            addr: nil,
+            queue: [],
+            awaiting_addr: nil,
+            partial_packet: [],
+            idle_count: 0
 
   @doc """
   Starts a new task running a packet queue.
 
   Use the task's PID as the handler for an Intcode computer in the network.
   """
-  @spec async :: Task.t
+  @spec async :: Task.t()
   def async do
     Task.async(__MODULE__, :run, [])
   end
@@ -46,7 +51,7 @@ defmodule Day23.PacketQueue do
   It also causes the packet queue to inform the Intcode computer of its
   address, which is required before the computer can begin sending traffic.
   """
-  @spec assign_addr(t, Day23.Router.addr, Day23.Router.t) :: any
+  @spec assign_addr(t, Day23.Router.addr(), Day23.Router.t()) :: any
   def assign_addr(pid, addr, router) do
     send(pid, {:assign_addr, addr, router})
   end
@@ -66,8 +71,9 @@ defmodule Day23.PacketQueue do
     receive do
       {:assign_addr, addr, router} ->
         case pq.awaiting_addr do
-          nil -> 
+          nil ->
             loop(%{pq | router: router, addr: addr, queue: [addr]})
+
           pid ->
             Intcode.send_input(pid, addr)
             loop(%{pq | router: router, addr: addr, awaiting_addr: nil})

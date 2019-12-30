@@ -16,11 +16,12 @@ defmodule Day23 do
     nat = Day23.NAT.async(router.pid, :once)
     Day23.Router.set_nat(router.pid, nat.pid)
 
-    queues = for _ <- 1..50 do
-      q = Day23.PacketQueue.async()
-      Day23.Router.add_queue(router.pid, q.pid)
-      q
-    end
+    queues =
+      for _ <- 1..50 do
+        q = Day23.PacketQueue.async()
+        Day23.Router.add_queue(router.pid, q.pid)
+        q
+      end
 
     for q <- queues do
       Intcode.Computer.async(input, q.pid)
@@ -35,11 +36,12 @@ defmodule Day23 do
     nat = Day23.NAT.async(router.pid, :ongoing)
     Day23.Router.set_nat(router.pid, nat.pid)
 
-    queues = for _ <- 1..50 do
-      q = Day23.PacketQueue.async()
-      Day23.Router.add_queue(router.pid, q.pid)
-      q
-    end
+    queues =
+      for _ <- 1..50 do
+        q = Day23.PacketQueue.async()
+        Day23.Router.add_queue(router.pid, q.pid)
+        q
+      end
 
     for q <- queues do
       Intcode.Computer.async(input, q.pid)

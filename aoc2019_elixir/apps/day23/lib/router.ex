@@ -32,7 +32,7 @@ defmodule Day23.Router do
   @doc """
   Starts a new router as an async `Task`.
   """
-  @spec async :: Task.t
+  @spec async :: Task.t()
   def async do
     Task.async(__MODULE__, :run, [])
   end
@@ -48,7 +48,7 @@ defmodule Day23.Router do
   @doc """
   Set the `Day23.NAT` for a particular router.
   """
-  @spec set_nat(t, Day23.NAT.t) :: any
+  @spec set_nat(t, Day23.NAT.t()) :: any
   def set_nat(pid, nat) do
     send(pid, {:set_nat, nat})
   end
@@ -59,7 +59,7 @@ defmodule Day23.Router do
   The router will choose a unique address for the queue and use
   `Day23.PacketQueue.assign_addr/3` to tell the queue its address.
   """
-  @spec add_queue(t, Day23.PacketQueue.t) :: any
+  @spec add_queue(t, Day23.PacketQueue.t()) :: any
   def add_queue(pid, queue) do
     send(pid, {:add_queue, queue})
   end

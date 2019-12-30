@@ -30,7 +30,7 @@ defmodule Day23.NAT do
   traffic. The NAT will not receive any packets from the router until it is added
   to the router with `Day23.Router.set_nat/2`.
   """
-  @spec async(Day23.Router.t, mode) :: Task.t
+  @spec async(Day23.Router.t(), mode) :: Task.t()
   def async(router, mode) do
     Task.async(__MODULE__, :run, [router, mode])
   end
@@ -44,7 +44,7 @@ defmodule Day23.NAT do
   If `mode` is `:ongoing`, then the NAT will perform its normal function of
   restarting the network traffic when it idles.
   """
-  @spec run(Day23.Router.t, mode) :: {number, number}
+  @spec run(Day23.Router.t(), mode) :: {number, number}
   def run(router, mode) do
     Logger.metadata(mode: mode)
 
@@ -57,7 +57,7 @@ defmodule Day23.NAT do
   defp run_once do
     receive do
       {:packet, {x, y}} ->
-        Logger.debug("nat received packet", [x: x, y: y])
+        Logger.debug("nat received packet", x: x, y: y)
         {x, y}
     end
   end
@@ -65,13 +65,13 @@ defmodule Day23.NAT do
   defp loop(router, last_received, last_broadcast) do
     receive do
       {:packet, {x, y}} ->
-        Logger.debug("nat received packet", [x: x, y: y])
+        Logger.debug("nat received packet", x: x, y: y)
         loop(router, {x, y}, last_broadcast)
 
       :all_idle ->
         {x, y} = last_received
         {_, y0} = last_broadcast || {nil, nil}
-        Logger.debug("all queues idle", [x: x, y: y, prev_y: y0])
+        Logger.debug("all queues idle", x: x, y: y, prev_y: y0)
 
         cond do
           y == y0 ->

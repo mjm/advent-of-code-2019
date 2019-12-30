@@ -30,7 +30,7 @@ defmodule Intcode.Memory do
   """
   @type data :: list(value)
 
-  @spec start_link(data) :: Agent.on_start
+  @spec start_link(data) :: Agent.on_start()
   def start_link(data) do
     Agent.start_link(fn -> data_to_map(data) end)
   end
@@ -66,7 +66,7 @@ defmodule Intcode.Memory do
 
   Produces memory data suitable for `start_link/1` or `Intcode.Computer.async/2`.
   """
-  @spec from_string(String.t) :: data
+  @spec from_string(String.t()) :: data
   def from_string(str) do
     for num <- String.split(str, ","), do: String.to_integer(num)
   end
