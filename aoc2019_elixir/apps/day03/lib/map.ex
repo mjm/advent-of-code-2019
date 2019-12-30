@@ -1,4 +1,8 @@
 defmodule Day03.Map do
+  @moduledoc """
+  Functions for working with wiring maps.
+  """
+
   def set(m, point, id, steps) do
     Map.update(m, point, %{id => steps}, &Map.put_new(&1, id, steps))
   end

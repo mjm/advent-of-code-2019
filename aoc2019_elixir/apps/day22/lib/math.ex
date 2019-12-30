@@ -25,10 +25,10 @@ defmodule Day22.Math do
 
   ## Examples
 
-    iex> Day22.Math.pow(5, 2, 3)
-    1
-    iex> Day22.Math.pow(3, 4, 17)
-    13
+      iex> Day22.Math.pow(5, 2, 3)
+      1
+      iex> Day22.Math.pow(3, 4, 17)
+      13
 
   """
   @spec pow(number, number, number) :: number

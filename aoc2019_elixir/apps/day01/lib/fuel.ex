@@ -4,14 +4,14 @@ defmodule Day01.Fuel do
 
   ## Examples
 
-    iex> Day01.Fuel.base_required(12)
-    2
-    iex> Day01.Fuel.base_required(14)
-    2
-    iex> Day01.Fuel.base_required(1969)
-    654
-    iex> Day01.Fuel.base_required(100756)
-    33583
+      iex> Day01.Fuel.base_required(12)
+      2
+      iex> Day01.Fuel.base_required(14)
+      2
+      iex> Day01.Fuel.base_required(1969)
+      654
+      iex> Day01.Fuel.base_required(100756)
+      33583
 
   """
   def base_required(mass) do
@@ -24,14 +24,14 @@ defmodule Day01.Fuel do
 
   ## Examples
 
-    iex> Day01.Fuel.total_required(12)
-    2
-    iex> Day01.Fuel.total_required(14)
-    2
-    iex> Day01.Fuel.total_required(1969)
-    966
-    iex> Day01.Fuel.total_required(100756)
-    50346
+      iex> Day01.Fuel.total_required(12)
+      2
+      iex> Day01.Fuel.total_required(14)
+      2
+      iex> Day01.Fuel.total_required(1969)
+      966
+      iex> Day01.Fuel.total_required(100756)
+      50346
 
   """
   def total_required(mass) do

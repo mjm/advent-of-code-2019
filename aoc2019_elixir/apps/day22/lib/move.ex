@@ -8,8 +8,11 @@ defmodule Day22.Move do
 
   @typedoc """
   The result of one or more shuffling moves as a pair of multipler and offset.
-  The new position of a card can be found by multiplying the card's position by
-  the multiplier, then adding the offset.
+
+  This is a collapsed representation of moves that remains efficient even for
+  working with large numbers of moves and repetitions. The new position of a
+  card can be found by multiplying the card's position by the multiplier, then
+  adding the offset.
   """
   @type result :: {number, number}
 
@@ -18,12 +21,12 @@ defmodule Day22.Move do
 
   ## Examples
 
-    iex> Day22.Move.from_string("deal with increment 8")
-    {:deal, 8}
-    iex> Day22.Move.from_string("cut -103")
-    {:cut, -103}
-    iex> Day22.Move.from_string("deal into new stack")
-    :reverse
+      iex> Day22.Move.from_string("deal with increment 8")
+      {:deal, 8}
+      iex> Day22.Move.from_string("cut -103")
+      {:cut, -103}
+      iex> Day22.Move.from_string("deal into new stack")
+      :reverse
   """
   @spec from_string(String.t) :: t
   def from_string(str)
@@ -39,21 +42,21 @@ defmodule Day22.Move do
 
   ### From starting position
 
-    iex> Day22.Move.perform({1, 0}, 7, {:deal, 3})
-    {3, 0}
-    iex> Day22.Move.perform({1, 0}, 7, {:cut, 4})
-    {1, 3}
-    iex> Day22.Move.perform({1, 0}, 7, :reverse)
-    {6, 6}
+      iex> Day22.Move.perform({1, 0}, 7, {:deal, 3})
+      {3, 0}
+      iex> Day22.Move.perform({1, 0}, 7, {:cut, 4})
+      {1, 3}
+      iex> Day22.Move.perform({1, 0}, 7, :reverse)
+      {6, 6}
 
   ### From more interesting places
 
-    iex> Day22.Move.perform({1, 4}, 10, {:deal, 7})
-    {7, 8}
-    iex> Day22.Move.perform({7, 8}, 10, :reverse)
-    {3, 1}
-    iex> Day22.Move.perform({3, 1}, 10, {:cut, -3})
-    {3, 4}
+      iex> Day22.Move.perform({1, 4}, 10, {:deal, 7})
+      {7, 8}
+      iex> Day22.Move.perform({7, 8}, 10, :reverse)
+      {3, 1}
+      iex> Day22.Move.perform({3, 1}, 10, {:cut, -3})
+      {3, 4}
 
   """
   @spec perform(result, number, t) :: result
@@ -73,10 +76,10 @@ defmodule Day22.Move do
 
   ## Examples
 
-    iex> Day22.Move.perform_list([{:cut, 6}, {:deal, 7}, :reverse], 11)
-    {4, 8}
-    iex> Day22.Move.perform_list([{:deal, 7}, :reverse, :reverse], 11)
-    {7, 0}
+      iex> Day22.Move.perform_list([{:cut, 6}, {:deal, 7}, :reverse], 11)
+      {4, 8}
+      iex> Day22.Move.perform_list([{:deal, 7}, :reverse, :reverse], 11)
+      {7, 0}
 
   """
   @spec perform_list(list(t), number) :: result
@@ -92,21 +95,22 @@ defmodule Day22.Move do
 
   ### Back to starting position
 
-    iex> Day22.Move.undo({3, 0}, 7, {:deal, 3})
-    {1, 0}
-    iex> Day22.Move.undo({1, 3}, 7, {:cut, 4})
-    {1, 0}
-    iex> Day22.Move.undo({6, 6}, 7, :reverse)
-    {1, 0}
+      iex> Day22.Move.undo({3, 0}, 7, {:deal, 3})
+      {1, 0}
+      iex> Day22.Move.undo({1, 3}, 7, {:cut, 4})
+      {1, 0}
+      iex> Day22.Move.undo({6, 6}, 7, :reverse)
+      {1, 0}
 
   ### Back from more interesting places
 
-    iex> Day22.Move.undo({7, 8}, 10, {:deal, 7})
-    {1, 4}
-    iex> Day22.Move.undo({3, 1}, 10, :reverse)
-    {7, 8}
-    iex> Day22.Move.undo({3, 4}, 10, {:cut, -3})
-    {3, 1}
+      iex> Day22.Move.undo({7, 8}, 10, {:deal, 7})
+      {1, 4}
+      iex> Day22.Move.undo({3, 1}, 10, :reverse)
+      {7, 8}
+      iex> Day22.Move.undo({3, 4}, 10, {:cut, -3})
+      {3, 1}
+
   """
   @spec undo(result, number, t) :: result
   def undo(result, size, move)
@@ -121,10 +125,10 @@ defmodule Day22.Move do
 
   ## Examples
 
-    iex> Day22.Move.undo_list([{:cut, 6}, {:deal, 7}, :reverse], 11)
-    {3, 9}
-    iex> Day22.Move.undo_list([{:deal, 7}, :reverse, :reverse], 11)
-    {8, 0}
+      iex> Day22.Move.undo_list([{:cut, 6}, {:deal, 7}, :reverse], 11)
+      {3, 9}
+      iex> Day22.Move.undo_list([{:deal, 7}, :reverse, :reverse], 11)
+      {8, 0}
 
   """
   @spec undo_list(list(t), number) :: result
@@ -137,17 +141,19 @@ defmodule Day22.Move do
 
   ## Examples
 
-    iex> Day22.Move.repeat({4, 3}, 11, 0)
-    {1, 0}
-    iex> Day22.Move.repeat({4, 3}, 11, 1)
-    {4, 3}
-    iex> Day22.Move.repeat({4, 3}, 11, 2)
-    {5, 4}
-    iex> Day22.Move.repeat({4, 3}, 11, 3)
-    {9, 8}
+      iex> Day22.Move.repeat({4, 3}, 11, 0)
+      {1, 0}
+      iex> Day22.Move.repeat({4, 3}, 11, 1)
+      {4, 3}
+      iex> Day22.Move.repeat({4, 3}, 11, 2)
+      {5, 4}
+      iex> Day22.Move.repeat({4, 3}, 11, 3)
+      {9, 8}
 
   """
   @spec repeat(result, number, number) :: result
+  def repeat(result, size, times)
+
   def repeat({m, b}, size, times) do
     mtimes = pow(m, times, size)
     mod({

@@ -14,12 +14,12 @@ defmodule Day14.Reaction do
   @doc """
   Parse a reaction from a string describing the inputs and outputs.
 
-  ## Example
+  ## Examples
 
-    iex> Day14.Reaction.from_string("157 ORE => 5 NZVS")
-    {[{157, "ORE"}], {5, "NZVS"}}
-    iex> Day14.Reaction.from_string("22 VJHF, 37 MNCFX => 5 FWMGM")
-    {[{22, "VJHF"}, {37, "MNCFX"}], {5, "FWMGM"}}
+      iex> Day14.Reaction.from_string("157 ORE => 5 NZVS")
+      {[{157, "ORE"}], {5, "NZVS"}}
+      iex> Day14.Reaction.from_string("22 VJHF, 37 MNCFX => 5 FWMGM")
+      {[{22, "VJHF"}, {37, "MNCFX"}], {5, "FWMGM"}}
 
   """
   @spec from_string(String.t) :: t
