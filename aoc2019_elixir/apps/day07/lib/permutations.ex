@@ -1,4 +1,12 @@
 defmodule Day07.Permutations do
+  @moduledoc """
+  Helper function for computing every permutation of an enumerable.
+  """
+
+  @doc """
+  Returns a list of all possible permutations of the given enumerable.
+  """
+  @spec all(Enum.t) :: list(list(any))
   def all(nums) do
     {_, acc} = generate(Enum.count(nums), Enum.to_list(nums), [])
     acc

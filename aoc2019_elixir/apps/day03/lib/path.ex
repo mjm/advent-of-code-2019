@@ -1,8 +1,44 @@
 defmodule Day03.Path do
+  @moduledoc """
+  Functions for working with paths of wires.
+  """
+
+  @typedoc """
+  A list of path segments that forms a complete wire path.
+  """
+  @type t :: list(segment)
+
+  @typedoc """
+  A single segment of a path, with a direction and distance.
+  """
+  @type segment :: {direction, integer}
+
+  @typedoc """
+  A cardinal direction for a segment of a path.
+  """
+  @type direction :: :up | :down | :left | :right
+
+  @doc """
+  Reads a wire's path from a description of its segments.
+
+  ## Example
+
+      iex> Day03.Path.from_string("R75,D30,R83,U83,L12")
+      [
+        {:right, 75},
+        {:down, 30},
+        {:right, 83},
+        {:up, 83},
+        {:left, 12},
+      ]
+
+  """
+  @spec from_string(String.t) :: t
   def from_string(str) do
     String.split(str, ",") |> Enum.map(&segment_from_string/1)
   end
 
+  @spec segment_from_string(String.t) :: segment
   defp segment_from_string(<<dir::utf8, dist::binary>>) do
     distance = String.to_integer(dist)
 
@@ -14,6 +50,11 @@ defmodule Day03.Path do
     end
   end
 
+  @doc """
+  Walk the path on the given map, marking the number of steps required to get to
+  each point along the path. Returns the updated map.
+  """
+  @spec apply(Day03.Map.t, Day03.Map.id, t) :: Day03.Map.t
   def apply(m, id, path) do
     {m, _, _} =
       Enum.reduce(path, {m, {0, 0}, 0}, fn segment, {m, start, steps} ->

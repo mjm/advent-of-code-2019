@@ -1,4 +1,14 @@
 defmodule Day14.Table do
+  @moduledoc """
+  Functions for creating and working with a table of chemical reactions.
+
+  A chemical reaction table is represented as a digraph where each vertex is a
+  material. The graph has edges from the output of a reaction to each input
+  required for the reaction, with labels for the quantity of each component.
+  This structure supports being able to determine the amount of ore needed to
+  create different amounts of fuel (or other materials).
+  """
+
   alias Day14.Reaction, as: Reaction
 
   @typedoc """
@@ -36,9 +46,23 @@ defmodule Day14.Table do
     :digraph_utils.topsort(table)
   end
 
-  @doc """
+  @doc ~S|
   Calculate the amount of ore required to produce a certain amount of a material.
-  """
+
+  ## Examples
+
+      iex> table = Day14.Table.from_string(String.trim("""
+      ...> 10 ORE => 10 A
+      ...> 1 ORE => 1 B
+      ...> 7 A, 1 B => 1 C
+      ...> 7 A, 1 C => 1 D
+      ...> 7 A, 1 D => 1 E
+      ...> 7 A, 1 E => 1 FUEL
+      ...> """))
+      iex> Day14.Table.required_ore(table, {1, "FUEL"})
+      31
+
+  |
   @spec required_ore(t, Reaction.component) :: number
   def required_ore(table, component)
   def required_ore(table, {amount, material}) do

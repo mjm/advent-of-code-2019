@@ -1,4 +1,8 @@
 defmodule Day14.Reaction do
+  @moduledoc """
+  Types and functions for working with individual chemical reactions.
+  """
+
   @typedoc """
   A reaction that consumes one or more input components and produces some output
   component.

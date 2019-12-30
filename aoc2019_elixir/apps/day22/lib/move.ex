@@ -1,4 +1,8 @@
 defmodule Day22.Move do
+  @moduledoc """
+  Functions and types for working with shuffling moves.
+  """
+
   import Day22.Math
 
   @typedoc """

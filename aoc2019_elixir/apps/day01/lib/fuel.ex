@@ -1,4 +1,8 @@
 defmodule Day01.Fuel do
+  @moduledoc """
+  Functions for calculating fuel requirements for the ship and its cargo.
+  """
+
   @doc ~S"""
   Calculates the base amount of fuel required to carry the given mass.
 

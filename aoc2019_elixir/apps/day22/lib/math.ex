@@ -1,4 +1,8 @@
 defmodule Day22.Math do
+  @moduledoc """
+  Helpful math functions for doing modular arithmetic.
+  """
+
   import Bitwise
 
   @doc """
