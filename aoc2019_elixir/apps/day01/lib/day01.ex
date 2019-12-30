@@ -1,4 +1,8 @@
 defmodule Day01 do
+  @moduledoc """
+  [Day 1: The Tyranny of the Rocket Equation](https://adventofcode.com/2019/day/1)
+  """
+
   @behaviour Aoc.Problem
   use GenServer
 

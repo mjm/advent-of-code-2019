@@ -1,5 +1,9 @@
 defmodule Day22 do
-  alias Day22.Move, as: Move
+  @moduledoc """
+  [Day 22: Slam Shuffle](https://adventofcode.com/2019/day/22)
+  """
+
+  alias Day22.Move
 
   @behaviour Aoc.Problem
 

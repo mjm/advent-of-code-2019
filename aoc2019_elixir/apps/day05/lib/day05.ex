@@ -1,4 +1,8 @@
 defmodule Day05 do
+  @moduledoc """
+  [Day 5: Sunny with a Chance of Asteroids](https://adventofcode.com/2019/day/5)
+  """
+
   @behaviour Aoc.Problem
 
   @impl Aoc.Problem

@@ -1,4 +1,8 @@
 defmodule Day02 do
+  @moduledoc """
+  [Day 2: 1202 Program Alarm](https://adventofcode.com/2019/day/2)
+  """
+
   @behaviour Aoc.Problem
 
   @impl Aoc.Problem

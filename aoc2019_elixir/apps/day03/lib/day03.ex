@@ -1,4 +1,8 @@
 defmodule Day03 do
+  @moduledoc """
+  [Day 3: Crossed Wires](https://adventofcode.com/2019/day/3)
+  """
+
   @behaviour Aoc.Problem
 
   @impl Aoc.Problem

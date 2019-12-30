@@ -1,5 +1,9 @@
 defmodule Day14 do
-  alias Day14.Table, as: Table
+  @moduledoc """
+  [Day 14: Space Stoichiometry](https://adventofcode.com/2019/day/14)
+  """
+
+  alias Day14.Table
 
   @behaviour Aoc.Problem
   
