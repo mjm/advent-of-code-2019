@@ -1,15 +1,17 @@
 defmodule Intcode.Instruction do
+  @moduledoc false
+
   @doc ~S"""
   Decodes an instruction opcode and its parameter modes.
 
   ## Examples
 
-    iex> Intcode.Instruction.decode(1002)
-    {:mult, [:abs, :imm, :abs]}
-    iex> Intcode.Instruction.decode(3)
-    {:input, [:abs]}
-    iex> Intcode.Instruction.decode(21001)
-    {:add, [:abs, :imm, :rel]}
+      iex> Intcode.Instruction.decode(1002)
+      {:mult, [:abs, :imm, :abs]}
+      iex> Intcode.Instruction.decode(3)
+      {:input, [:abs]}
+      iex> Intcode.Instruction.decode(21001)
+      {:add, [:abs, :imm, :rel]}
 
   """
   def decode(value) do

@@ -1,9 +1,8 @@
 defmodule Intcode do
-  def send_input(computer, value) do
-    Intcode.Computer.send_input(computer, value)
-  end
+  @moduledoc """
+  Helper functions for working with Intcode computers.
+  """
 
-  def memory_from_string(str) do
-    Intcode.Memory.from_string(str)
-  end
+  defdelegate send_input(computer, value), to: Intcode.Computer
+  defdelegate memory_from_string(str), to: Intcode.Memory, as: :from_string
 end
